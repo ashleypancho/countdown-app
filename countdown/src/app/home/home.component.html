@@ -1,0 +1,47 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      Countdown
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Countdown2</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <div id="container" *ngIf="currentView === ''">
+    <strong>Welcome!</strong>
+    <p>Select a tab to get started.</p>
+  </div>
+
+  <div id="container" *ngIf="currentView === 'letters'">
+    <app-letters></app-letters>
+  </div>
+
+  <div id="container" *ngIf="currentView === 'numbers'">
+    <app-numbers></app-numbers>
+  </div>
+
+  <div id="container" *ngIf="currentView === 'conundrum'">
+    <app-conundrum></app-conundrum>
+  </div>
+</ion-content>
+
+<ion-tab-bar slot="bottom">
+  <ion-tab-button tab="letters" (click)="changeView('letters')">
+    <ion-icon name="text-outline"></ion-icon>
+    Letters
+  </ion-tab-button>
+  <ion-tab-button tab="numbers" (click)="changeView('numbers')">
+    <ion-icon name="add-outline"></ion-icon>
+    Numbers
+  </ion-tab-button>
+  <ion-tab-button tab="conundrum" (click)="changeView('conundrum')">
+    <ion-icon name="sad"></ion-icon>
+    Conundrum
+  </ion-tab-button>
+</ion-tab-bar>

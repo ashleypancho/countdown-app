@@ -1,0 +1,13 @@
+<div>
+  <strong>Letters Round</strong>
+</div>
+<ion-input id="word" placeholder="Enter a word"></ion-input>
+<ion-button (click)="submitWord()">Submit</ion-button>
+
+
+<div>
+  Entered words
+  <ul>
+    <li *ngFor="let word of wordlist">{{word}}</li>
+  </ul>
+</div>
