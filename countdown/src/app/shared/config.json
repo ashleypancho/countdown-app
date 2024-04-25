@@ -1,4 +1,6 @@
 {
+    "max_letters": 9,
+    "timer_duration_in_seconds": 30,
     "vowels": {
         "A": 15,
         "E": 21,

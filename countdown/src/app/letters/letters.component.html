@@ -3,17 +3,24 @@
 </div>
 <div *ngIf="phase=='letterSelection'">
   <!-- letterSelection phase - player chooses -->
-  <ion-button (click)="selectConsonant()" [disabled]="consonantButtonDisabled">Consonant</ion-button>
-  <ion-button (click)="selectVowel()" [disabled]="vowelButtonDisabled">Vowel</ion-button>
+  <div class="selection-buttons">
+    <p>Please select {{ (MAX_LETTERS - lettersList.length) }} more letter(s)</p>
+    <ion-button (click)="selectConsonant()" [disabled]="consonantButtonDisabled">Consonant</ion-button>
+    <ion-button (click)="selectVowel()" [disabled]="vowelButtonDisabled">Vowel</ion-button>
+  </div>
 </div>
-<div class="tile-group">
+<div class="tile-group" *ngIf="phase === 'selection' || phase === 'entry'">
   <span class="tile" *ngFor="let letter of lettersList">
-    {{letter}}
+    <strong>
+      {{letter}}
+    </strong>
   </span>
 </div>
 <div *ngIf="phase=='entry'">
   <!-- entry phase - player enters words based on letters -->
-  <ion-input id="word" placeholder="Enter a word"></ion-input>
+  
+  <p>{{timer}}</p>
+  <ion-input id="word" fill="outline" placeholder="Enter a word" (keyup.enter)="submitWord()"></ion-input>
   <ion-button (click)="submitWord()">Submit</ion-button>
 
   <div>
@@ -30,4 +37,5 @@
 
 </div>
 
-<ion-toast [isOpen]="isToastOpen" position="bottom" positionAnchor="footer" [message]="errorMessage" [duration]="5000"(didDismiss)="setOpen(false)"></ion-toast>
+<ion-toast [isOpen]="isToastOpen" position="bottom" positionAnchor="footer" [message]="errorMessage" [duration]="5000"
+  (didDismiss)="setOpen(false)"></ion-toast>

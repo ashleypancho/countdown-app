@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import letterFrequencies from './letter-frequency.json';
+import config from '../shared/config.json';
 
 @Component({
   selector: 'app-letters',
@@ -7,6 +7,9 @@ import letterFrequencies from './letter-frequency.json';
   styleUrls: ['./letters.component.scss'],
 })
 export class LettersComponent implements OnInit {
+  MAX_LETTERS: number = 9;
+  TIMER_DURATION: number = 30;
+
   isToastOpen: boolean = false;
   phase: string = 'letterSelection';
   errorMessage: string = '';
@@ -19,19 +22,23 @@ export class LettersComponent implements OnInit {
   vowelButtonDisabled: boolean = false;
   consonantButtonDisabled: boolean = false;
 
+  timer: number = this.TIMER_DURATION;
+
   lettersList: string[] = [];
 
   constructor() { }
 
   ngOnInit() {
-    for (const vowel in letterFrequencies.vowels) {
-      for (let i = 0; i < (letterFrequencies.vowels as any)[vowel]; i++) {
+    this.MAX_LETTERS = config.max_letters;
+    this.TIMER_DURATION = config.timer_duration_in_seconds;
+    for (const vowel in config.vowels) {
+      for (let i = 0; i < (config.vowels as any)[vowel]; i++) {
         this.vowels.push(vowel);
       }
     }
 
-    for (const consonants in letterFrequencies.consonants) {
-      for (let i = 0; i < (letterFrequencies.consonants as any)[consonants]; i++) {
+    for (const consonants in config.consonants) {
+      for (let i = 0; i < (config.consonants as any)[consonants]; i++) {
         this.consonants.push(consonants);
       }
     }
@@ -45,7 +52,7 @@ export class LettersComponent implements OnInit {
       this.lettersList.push(this.consonants[selectedIdx]);
       this.consonants.splice(selectedIdx, 1);
       this.consonantCount++;
-      
+
       // check if we have enough consonants
       if (this.consonantCount >= 6) {
         // we don't really need to check > but just in case
@@ -74,7 +81,19 @@ export class LettersComponent implements OnInit {
   checkSelectionComplete() {
     if (this.lettersList.length === 9) {
       this.phase = "entry";
+      this.startTimer();
     }
+  }
+
+  startTimer() {
+    this.timer = this.TIMER_DURATION;
+    const interval = setInterval(() => {
+      if(this.timer <= 0){
+        clearInterval(interval);
+        this.phase = "finalSubmission"
+      } 
+      this.timer -= 1;
+    }, 1000);
   }
 
   submitWord() {
