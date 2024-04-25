@@ -2,7 +2,14 @@
   <strong>Letters Round</strong>
 </div>
 <div *ngIf="phase=='letterSelection'">
-  <!-- letterSelection phase - player chooses  -->
+  <!-- letterSelection phase - player chooses -->
+  <ion-button (click)="selectConsonant()" [disabled]="consonantButtonDisabled">Consonant</ion-button>
+  <ion-button (click)="selectVowel()" [disabled]="vowelButtonDisabled">Vowel</ion-button>
+</div>
+<div class="tile-group">
+  <span class="tile" *ngFor="let letter of lettersList">
+    {{letter}}
+  </span>
 </div>
 <div *ngIf="phase=='entry'">
   <!-- entry phase - player enters words based on letters -->
