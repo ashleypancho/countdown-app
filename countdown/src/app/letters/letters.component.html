@@ -1,13 +1,26 @@
 <div>
   <strong>Letters Round</strong>
 </div>
-<ion-input id="word" placeholder="Enter a word"></ion-input>
-<ion-button (click)="submitWord()">Submit</ion-button>
-
-
-<div>
-  Entered words
-  <ul>
-    <li *ngFor="let word of wordlist">{{word}}</li>
-  </ul>
+<div *ngIf="phase=='letterSelection'">
+  <!-- letterSelection phase - player chooses  -->
 </div>
+<div *ngIf="phase=='entry'">
+  <!-- entry phase - player enters words based on letters -->
+  <ion-input id="word" placeholder="Enter a word"></ion-input>
+  <ion-button (click)="submitWord()">Submit</ion-button>
+
+  <div>
+    Entered words
+    <ul>
+      <li *ngFor="let word of wordlist">{{word}}</li>
+    </ul>
+  </div>
+</div>
+<div *ngIf="phase=='finalSubmission'">
+
+</div>
+<div>
+
+</div>
+
+<ion-toast [isOpen]="isToastOpen" position="bottom" positionAnchor="footer" [message]="errorMessage" [duration]="5000"(didDismiss)="setOpen(false)"></ion-toast>
