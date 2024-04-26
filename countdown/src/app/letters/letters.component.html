@@ -18,13 +18,13 @@
 </div>
 <div *ngIf="phase=='entry'">
   <!-- entry phase - player enters words based on letters -->
-  
-  <p>{{timer}}</p>
-  <ion-input id="word" fill="outline" placeholder="Enter a word" (keyup.enter)="submitWord()"></ion-input>
+
+  <p>Time left: {{timer}} second<span *ngIf="timer !== 1">s</span></p>
+  <ion-input id="word" autofocus="true" fill="outline" placeholder="Enter a word" (keyup.enter)="submitWord()"></ion-input>
   <ion-button (click)="submitWord()">Submit</ion-button>
 
   <div>
-    Entered words
+    <p>Entered words</p>
     <ul>
       <li *ngFor="let word of wordlist">{{word}}</li>
     </ul>
@@ -37,7 +37,7 @@
   </div>
 </div>
 <div *ngIf="phase === 'score'">
-  {{ finalMessage }}
+  <p>{{ finalMessage }}</p>
 
   <ion-button (click)="replay(true)">Play again</ion-button>
 </div>

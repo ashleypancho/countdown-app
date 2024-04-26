@@ -114,10 +114,19 @@ export class LettersComponent implements OnInit {
 
   startTimer() {
     this.timer = this.TIMER_DURATION;
+    // start playing the timer audio
+    const audio = new Audio('assets/audio/countdown_timer.mp3');
+    audio.play();
     const interval = setInterval(() => {
       if (this.timer <= 0) {
         clearInterval(interval);
-        this.phase = "finalSubmission"
+        if (this.wordlist.length > 0) {
+          this.phase = "finalSubmission"
+        } else {
+          this.finalScore = 0;
+          this.finalMessage = `Sorry, you didn't enter any words. Your score is 0 points.`;
+          this.phase = 'score';
+        }
       }
       this.timer -= 1;
     }, 1000);
