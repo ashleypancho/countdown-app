@@ -9,8 +9,8 @@
     <ion-button (click)="selectVowel()" [disabled]="vowelButtonDisabled">Vowel</ion-button>
   </div>
 </div>
-<div class="tile-group" *ngIf="phase === 'selection' || phase === 'entry'">
-  <span class="tile" *ngFor="let letter of letterList">
+<div class="tile-group">
+  <span class="tile" *ngFor="let letter of letterList" (click)="selectLetter(letter)">
     <strong>
       {{letter}}
     </strong>
