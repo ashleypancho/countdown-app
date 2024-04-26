@@ -68,6 +68,11 @@ export class LettersComponent implements OnInit {
     this.finalMessage = '';
   }
 
+  selectLetter(letter: string) {
+    let input = (document.getElementById('word') as HTMLInputElement);
+    input.value = input.value + letter;
+  }
+
   selectConsonant() {
     if (this.consonants.length) {
       const selectedIdx = Math.floor(Math.random() * this.consonants.length);
