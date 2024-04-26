@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import config from '../shared/config.json';
+import { DictionaryService } from '../shared/dictionary.service';
 
 @Component({
   selector: 'app-letters',
@@ -24,13 +25,19 @@ export class LettersComponent implements OnInit {
 
   timer: number = this.TIMER_DURATION;
 
-  lettersList: string[] = [];
+  finalWord: string = '';
+  finalScore: number = 0;
+  finalMessage: string = '';
 
-  constructor() { }
+  letterList: string[] = [];
+
+  constructor(private dictSrv: DictionaryService) { }
 
   ngOnInit() {
     this.MAX_LETTERS = config.max_letters;
     this.TIMER_DURATION = config.timer_duration_in_seconds;
+
+    this.resetGame();
     for (const vowel in config.vowels) {
       for (let i = 0; i < (config.vowels as any)[vowel]; i++) {
         this.vowels.push(vowel);
@@ -46,10 +53,25 @@ export class LettersComponent implements OnInit {
     this.consonants.sort((a, b) => 0.5 - Math.random());
   }
 
+  resetGame() {
+    this.phase = 'letterSelection';
+    this.letterList = [];
+    this.wordlist = [];
+
+    this.vowelCount = 0;
+    this.vowelButtonDisabled = false;
+    this.consonantCount = 0;
+    this.consonantButtonDisabled = false;
+
+    this.finalWord = '';
+    this.finalScore = 0;
+    this.finalMessage = '';
+  }
+
   selectConsonant() {
     if (this.consonants.length) {
       const selectedIdx = Math.floor(Math.random() * this.consonants.length);
-      this.lettersList.push(this.consonants[selectedIdx]);
+      this.letterList.push(this.consonants[selectedIdx]);
       this.consonants.splice(selectedIdx, 1);
       this.consonantCount++;
 
@@ -65,7 +87,7 @@ export class LettersComponent implements OnInit {
   selectVowel() {
     if (this.vowels.length) {
       const selectedIdx = Math.floor(Math.random() * this.vowels.length);
-      this.lettersList.push(this.vowels[selectedIdx]);
+      this.letterList.push(this.vowels[selectedIdx]);
       this.vowels.splice(selectedIdx, 1);
       this.vowelCount++;
 
@@ -79,7 +101,7 @@ export class LettersComponent implements OnInit {
   }
 
   checkSelectionComplete() {
-    if (this.lettersList.length === 9) {
+    if (this.letterList.length === 9) {
       this.phase = "entry";
       this.startTimer();
     }
@@ -88,24 +110,24 @@ export class LettersComponent implements OnInit {
   startTimer() {
     this.timer = this.TIMER_DURATION;
     const interval = setInterval(() => {
-      if(this.timer <= 0){
+      if (this.timer <= 0) {
         clearInterval(interval);
         this.phase = "finalSubmission"
-      } 
+      }
       this.timer -= 1;
     }, 1000);
   }
 
   submitWord() {
     const input = (document.getElementById('word') as HTMLInputElement);
-    const wordFoundInLettersList = this.isValidWord(input.value.toUpperCase());
+    const wordFoundInletterList = this.isValidWord(input.value.toUpperCase());
     if (this.hasNumber(input.value)) {
       this.errorMessage = 'Invalid word: Word may not contain numbers';
       this.setOpen(true);
     } else if (this.wordlist.includes(input.value)) {
       this.errorMessage = "Word already submitted";
       this.setOpen(true);
-    } else if (!wordFoundInLettersList) {
+    } else if (!wordFoundInletterList) {
       this.errorMessage = "Invalid word: Word not valid based on given letters";
       this.setOpen(true);
     } else if (input.value.length > 0 && !this.wordlist.includes(input.value)) {
@@ -115,7 +137,7 @@ export class LettersComponent implements OnInit {
   }
 
   isValidWord(word: string) {
-    const validLetters = this.lettersList.slice();
+    const validLetters = this.letterList.slice();
     for (let i = 0; i < word.length; i++) {
       if (validLetters.includes(word.charAt(i))) {
         // check if validLetters array contains the letter of the word
@@ -138,4 +160,30 @@ export class LettersComponent implements OnInit {
   hasNumber(str: string) {
     return /\d/.test(str);
   }
+
+  selectWord(word: string) {
+    this.finalWord = word;
+    this.dictSrv.getDefinition(word).subscribe((result) => {
+      if (word.length === 9) {
+        this.finalScore = 18;
+      } else {
+        this.finalScore = word.length;
+      }
+      this.finalMessage = 'Congratulations! The word ' + word + ' scored you ' + this.finalScore + ' points!';
+      this.phase = 'score';
+    }, (error) => {
+      this.finalScore = 0;
+      this.finalMessage = 'Sorry, ' + word + ` isn't a valid word. You scored 0 points.`;
+      this.phase = 'score';
+    })
+  }
+
+  replay(replaceLetters: boolean) {
+    if (replaceLetters) {
+      this.ngOnInit();
+    } else {
+      this.resetGame();
+    }
+  }
+
 }

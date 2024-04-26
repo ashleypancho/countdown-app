@@ -4,13 +4,13 @@
 <div *ngIf="phase=='letterSelection'">
   <!-- letterSelection phase - player chooses -->
   <div class="selection-buttons">
-    <p>Please select {{ (MAX_LETTERS - lettersList.length) }} more letter(s)</p>
+    <p>Please select {{ (MAX_LETTERS - letterList.length) }} more letter(s)</p>
     <ion-button (click)="selectConsonant()" [disabled]="consonantButtonDisabled">Consonant</ion-button>
     <ion-button (click)="selectVowel()" [disabled]="vowelButtonDisabled">Vowel</ion-button>
   </div>
 </div>
 <div class="tile-group" *ngIf="phase === 'selection' || phase === 'entry'">
-  <span class="tile" *ngFor="let letter of lettersList">
+  <span class="tile" *ngFor="let letter of letterList">
     <strong>
       {{letter}}
     </strong>
@@ -31,10 +31,15 @@
   </div>
 </div>
 <div *ngIf="phase=='finalSubmission'">
-
+  <div>
+    Select the word you would like to submit
+    <ion-button *ngFor="let word of wordlist" (click)="selectWord(word)">{{word}}</ion-button>
+  </div>
 </div>
-<div>
+<div *ngIf="phase === 'score'">
+  {{ finalMessage }}
 
+  <ion-button (click)="replay(true)">Play again</ion-button>
 </div>
 
 <ion-toast [isOpen]="isToastOpen" position="bottom" positionAnchor="footer" [message]="errorMessage" [duration]="5000"
