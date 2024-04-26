@@ -75,7 +75,7 @@ export class LettersComponent implements OnInit {
 
   selectConsonant() {
     if (this.consonants.length) {
-      const selectedIdx = Math.floor(Math.random() * this.consonants.length);
+      const selectedIdx = 0; // Math.floor(Math.random() * this.consonants.length);
       this.letterList.push(this.consonants[selectedIdx]);
       this.consonants.splice(selectedIdx, 1);
       this.consonantCount++;
@@ -91,7 +91,7 @@ export class LettersComponent implements OnInit {
 
   selectVowel() {
     if (this.vowels.length) {
-      const selectedIdx = Math.floor(Math.random() * this.vowels.length);
+      const selectedIdx = 0; // Math.floor(Math.random() * this.vowels.length);
       this.letterList.push(this.vowels[selectedIdx]);
       this.vowels.splice(selectedIdx, 1);
       this.vowelCount++;
