@@ -113,10 +113,11 @@ export class LettersComponent implements OnInit {
   }
 
   startTimer() {
-    this.timer = this.TIMER_DURATION;
     // start playing the timer audio
     const audio = new Audio('assets/audio/countdown_timer.mp3');
+    audio.volume = 0.25;
     audio.play();
+    this.timer = this.TIMER_DURATION;
     const interval = setInterval(() => {
       if (this.timer <= 0) {
         clearInterval(interval);
