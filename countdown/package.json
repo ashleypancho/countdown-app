@@ -10,7 +10,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint",
-    "gh-pages": "ionic build --prod -- --base-href https://ashleypancho.github.io/countdown-app/ && npx angular-cli-ghpages --branch=BRANCH-NAME --dir=www"
+    "gh-pages": "ionic build --prod -- --base-href https://ashleypancho.github.io/countdown-app/ && npx angular-cli-ghpages --branch=gh-pages --dir=www"
   },
   "private": true,
   "dependencies": {
