@@ -29,6 +29,10 @@
   <div id="container" *ngIf="currentView === 'conundrum'">
     <app-conundrum></app-conundrum>
   </div>
+
+  <div id="container" *ngIf="currentView === 'settings'">
+    <app-settings></app-settings>
+  </div>
 </ion-content>
 
 <ion-tab-bar id="footer" slot="bottom">
@@ -43,5 +47,9 @@
   <ion-tab-button tab="conundrum" (click)="changeView('conundrum')">
     <ion-icon name="sad"></ion-icon>
     Conundrum
+  </ion-tab-button>
+  <ion-tab-button tab="conundrum" (click)="changeView('settings')">
+    <ion-icon name="settings-sharp"></ion-icon>
+    Settings
   </ion-tab-button>
 </ion-tab-bar>

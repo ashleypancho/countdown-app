@@ -37,6 +37,8 @@
         "max_numbers": 6,
         "max_large_numbers": 4,
         "timer_duration_in_seconds": 30,
+        "min_target_number": 100,
+        "max_target_number": 999,
         "small_numbers": [
             1,
             1,

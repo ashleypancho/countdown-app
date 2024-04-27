@@ -12,9 +12,22 @@
   </div>
 </div>
 <div class="tile-group" *ngIf="phase !== Phases.NUMBER_SELECTION">
+  <span class="tile target-tile">
+    <strong>
+      {{targetNumber}}
+    </strong>
+  </span>
   <span class="tile" *ngFor="let number of numberList" (click)="selectNumber(number)">
     <strong>
       {{number}}
     </strong>
   </span>
 </div>
+<div *ngIf="phase === Phases.ENTRY">
+  <!-- entry phase - player enters words based on letters -->
+  <p>Time left: {{timer}} second<span *ngIf="timer !== 1">s</span></p>
+</div>
+<div *ngIf="phase === Phases.SCORE">
+  <p>{{ finalMessage }}</p>
+
+  <ion-button (click)="replay(true)">Play again</ion-button>

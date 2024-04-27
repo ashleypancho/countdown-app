@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import config from '../shared/config.json';
 import { DictionaryService } from '../shared/dictionary.service';
+import { SettingsService } from '../shared/settings.service';
 
 @Component({
   selector: 'app-letters',
@@ -31,7 +32,7 @@ export class LettersComponent implements OnInit {
 
   letterList: string[] = [];
 
-  constructor(private dictSrv: DictionaryService) { }
+  constructor(private dictService: DictionaryService, private settingsService: SettingsService) { }
 
   ngOnInit() {
     this.MAX_LETTERS = config.lettersRound.max_letters;
@@ -113,10 +114,12 @@ export class LettersComponent implements OnInit {
   }
 
   startTimer() {
-    // start playing the timer audio
-    const audio = new Audio('assets/audio/countdown_timer.mp3');
-    audio.volume = 0.25;
-    audio.play();
+    if (this.settingsService.playAudio) {
+      // start playing the timer audio
+      const audio = new Audio('assets/audio/countdown_timer.mp3');
+      audio.volume = this.settingsService.audioVolume;
+      audio.play();
+    }
     this.timer = this.TIMER_DURATION;
     const interval = setInterval(() => {
       if (this.timer <= 0) {
@@ -178,7 +181,7 @@ export class LettersComponent implements OnInit {
 
   selectWord(word: string) {
     this.finalWord = word;
-    this.dictSrv.getDefinition(word).subscribe((result) => {
+    this.dictService.getDefinition(word).subscribe((result) => {
       if (word.length === 9) {
         this.finalScore = 18;
       } else {
