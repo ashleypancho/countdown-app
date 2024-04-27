@@ -3,7 +3,10 @@ import config from '../shared/config.json'
 
 export enum Phases {
   NUMBER_SELECTION,
-  ENTRY
+  NUMBER_DISPLAY,
+  ENTRY,
+  FINAL_SUBMISSION,
+  SCORE
 }
 @Component({
   selector: 'app-numbers',
@@ -14,6 +17,7 @@ export enum Phases {
 export class NumbersComponent implements OnInit {
   MAX_NUMBERS: number = 0;
   MAX_LARGE_NUMBERS: number = 0;
+  TIMER_DURATION: number = 0;
   Phases = Phases;
   phase: number = Phases.NUMBER_SELECTION;
 
@@ -24,9 +28,19 @@ export class NumbersComponent implements OnInit {
   numberButtonArray: number[] = [];
   numberList: number[] = [];
 
+  timer: number = 0;
+
+  finalScore: number = 0;
+  finalMessage: string = '';
+  finalEquation: string = '';
+
   constructor() { }
 
   ngOnInit() {
+    this.MAX_NUMBERS = config.numbersRound.max_numbers;
+    this.MAX_LARGE_NUMBERS = config.numbersRound.max_large_numbers;
+    this.TIMER_DURATION = config.numbersRound.timer_duration_in_seconds;
+
     this.resetGame();
 
     this.smallNumbers = config.numbersRound.small_numbers;
@@ -38,16 +52,15 @@ export class NumbersComponent implements OnInit {
   }
 
   resetGame() {
-    this.MAX_NUMBERS = config.numbersRound.max_numbers;
-    this.MAX_LARGE_NUMBERS = config.numbersRound.max_large_numbers;
     this.phase = Phases.NUMBER_SELECTION;
     // add 1 to the numberButtonArray so that we get all the indexes 0-MAX_NUMBERS
     this.numberButtonArray = Array(this.MAX_LARGE_NUMBERS + 1).fill(0).map((x, i) => i);
     this.numberList = [];
+    this.timer = this.TIMER_DURATION;
   }
 
   selectLargeNumbersCount(value: number) {
-    this.phase = Phases.ENTRY;
+    this.phase = Phases.NUMBER_DISPLAY;
     const tempNumberList: number[] = [];
 
     for (let i = 0; i < value; i++) {
@@ -62,9 +75,9 @@ export class NumbersComponent implements OnInit {
     let numbersDisplayed = 0;
 
     const interval = setInterval(() => {
-      if (numbersDisplayed < this.MAX_NUMBERS){
+      if (numbersDisplayed < this.MAX_NUMBERS) {
         this.numberList.push(tempNumberList[0]);
-        tempNumberList.splice(0,1);
+        tempNumberList.splice(0, 1);
         numbersDisplayed++;
       } else {
         clearInterval(interval);
@@ -76,10 +89,35 @@ export class NumbersComponent implements OnInit {
   generateTargetNumber() {
     const min = config.numbersRound.min_target_number;
     const max = config.numbersRound.max_target_number;
-    this.targetNumber = Math.floor(Math.random() * (max - min) + min)
+    this.targetNumber = Math.floor(Math.random() * (max - min) + min);
+    this.phase = Phases.ENTRY;
+    this.startTimer();
+  }
+
+  startTimer() {
+    // start playing the timer audio
+    const audio = new Audio('assets/audio/countdown_timer.mp3');
+    audio.volume = 0.25;
+    audio.play();
+    this.timer = this.TIMER_DURATION;
+    const interval = setInterval(() => {
+      if (this.timer <= 0) {
+        clearInterval(interval);
+        this.phase = Phases.SCORE;
+      }
+      this.timer -= 1;
+    }, 1000);
   }
 
   selectNumber(value: number) {
     console.log(value)
   };
+
+  replay(replaceNumbers: boolean) {
+    if (replaceNumbers) {
+      this.ngOnInit();
+    } else {
+      this.resetGame();
+    }
+  }
 }

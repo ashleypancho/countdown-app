@@ -23,3 +23,11 @@
     </strong>
   </span>
 </div>
+<div *ngIf="phase === Phases.ENTRY">
+  <!-- entry phase - player enters words based on letters -->
+  <p>Time left: {{timer}} second<span *ngIf="timer !== 1">s</span></p>
+</div>
+<div *ngIf="phase === Phases.SCORE">
+  <p>{{ finalMessage }}</p>
+
+  <ion-button (click)="replay(true)">Play again</ion-button>
