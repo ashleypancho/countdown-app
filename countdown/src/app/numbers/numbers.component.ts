@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import config from '../shared/config.json'
+import { SettingsService } from '../shared/settings.service';
 
 export enum Phases {
   NUMBER_SELECTION,
@@ -34,7 +35,7 @@ export class NumbersComponent implements OnInit {
   finalMessage: string = '';
   finalEquation: string = '';
 
-  constructor() { }
+  constructor(private settingsService: SettingsService) { }
 
   ngOnInit() {
     this.MAX_NUMBERS = config.numbersRound.max_numbers;
@@ -95,10 +96,12 @@ export class NumbersComponent implements OnInit {
   }
 
   startTimer() {
-    // start playing the timer audio
-    const audio = new Audio('assets/audio/countdown_timer.mp3');
-    audio.volume = 0.25;
-    audio.play();
+    if (this.settingsService.playAudio) {
+      // start playing the timer audio
+      const audio = new Audio('assets/audio/countdown_timer.mp3');
+      audio.volume = this.settingsService.audioVolume;
+      audio.play();
+    }
     this.timer = this.TIMER_DURATION;
     const interval = setInterval(() => {
       if (this.timer <= 0) {

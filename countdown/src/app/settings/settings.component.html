@@ -1,0 +1,12 @@
+<ion-list>
+  <ion-item>
+    <ion-toggle [enableOnOffLabels]="true" [checked]="settingsService.playAudio" (ionChange)="toggleAudio()">Play
+      Audio</ion-toggle>
+  </ion-item>
+  <ion-item *ngIf="settingsService.playAudio">
+    <ion-range [value]="settingsService.audioVolume * 100" (ionChange)="setVolume($event)">Volume</ion-range>
+  </ion-item>
+</ion-list>
+<ion-button (click)="saveSettings()">Save Settings</ion-button>
+<ion-toast [isOpen]="isToastOpen" position="bottom" positionAnchor="footer" [message]="toastMessage" [duration]="1000"
+  (didDismiss)="setOpen(false)"></ion-toast>
