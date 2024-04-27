@@ -1,34 +1,69 @@
 {
-    "max_letters": 9,
-    "timer_duration_in_seconds": 30,
-    "vowels": {
-        "A": 15,
-        "E": 21,
-        "I": 13,
-        "O": 13,
-        "U": 5
+    "lettersRound": {
+        "max_letters": 9,
+        "timer_duration_in_seconds": 30,
+        "vowels": {
+            "A": 15,
+            "E": 21,
+            "I": 13,
+            "O": 13,
+            "U": 5
+        },
+        "consonants": {
+            "B": 2,
+            "C": 3,
+            "D": 6,
+            "F": 2,
+            "G": 3,
+            "H": 2,
+            "J": 1,
+            "K": 1,
+            "L": 5,
+            "M": 4,
+            "N": 8,
+            "P": 4,
+            "Q": 1,
+            "R": 9,
+            "S": 9,
+            "T": 9,
+            "V": 1,
+            "W": 1,
+            "X": 1,
+            "Y": 1,
+            "Z": 1
+        }
     },
-    "consonants": {
-        "B": 2,
-        "C": 3,
-        "D": 6,
-        "F": 2,
-        "G": 3,
-        "H": 2,
-        "J": 1,
-        "K": 1,
-        "L": 5,
-        "M": 4,
-        "N": 8,
-        "P": 4,
-        "Q": 1,
-        "R": 9,
-        "S": 9,
-        "T": 9,
-        "V": 1,
-        "W": 1,
-        "X": 1,
-        "Y": 1,
-        "Z": 1
+    "numbersRound": {
+        "max_numbers": 6,
+        "max_large_numbers": 4,
+        "timer_duration_in_seconds": 30,
+        "small_numbers": [
+            1,
+            1,
+            2,
+            2,
+            3,
+            3,
+            4,
+            4,
+            5,
+            5,
+            6,
+            6,
+            7,
+            7,
+            8,
+            8,
+            9,
+            9,
+            10,
+            10
+        ],
+        "large_numbers": [
+            25,
+            50,
+            75,
+            100
+        ]
     }
 }
