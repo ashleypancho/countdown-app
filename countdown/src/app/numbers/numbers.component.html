@@ -1,3 +1,20 @@
-<p>
-  numbers works!
-</p>
+<div>
+  <strong>Numbers Round</strong>
+</div>
+<div *ngIf="phase== Phases.NUMBER_SELECTION">
+  <!-- numberSelection phase - player chooses -->
+  <div class="selection-buttons">
+    <p>How many large numbers would you like?</p>
+    <div class="centered">
+      <ion-button *ngFor="let number of numberButtonArray" (click)="selectLargeNumbersCount(number)"> {{number}}
+      </ion-button>
+    </div>
+  </div>
+</div>
+<div class="tile-group" *ngIf="phase !== Phases.NUMBER_SELECTION">
+  <span class="tile" *ngFor="let number of numberList" (click)="selectNumber(number)">
+    <strong>
+      {{number}}
+    </strong>
+  </span>
+</div>

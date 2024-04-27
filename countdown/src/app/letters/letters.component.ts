@@ -34,18 +34,18 @@ export class LettersComponent implements OnInit {
   constructor(private dictSrv: DictionaryService) { }
 
   ngOnInit() {
-    this.MAX_LETTERS = config.max_letters;
-    this.TIMER_DURATION = config.timer_duration_in_seconds;
+    this.MAX_LETTERS = config.lettersRound.max_letters;
+    this.TIMER_DURATION = config.lettersRound.timer_duration_in_seconds;
 
     this.resetGame();
-    for (const vowel in config.vowels) {
-      for (let i = 0; i < (config.vowels as any)[vowel]; i++) {
+    for (const vowel in config.lettersRound.vowels) {
+      for (let i = 0; i < (config.lettersRound.vowels as any)[vowel]; i++) {
         this.vowels.push(vowel);
       }
     }
 
-    for (const consonants in config.consonants) {
-      for (let i = 0; i < (config.consonants as any)[consonants]; i++) {
+    for (const consonants in config.lettersRound.consonants) {
+      for (let i = 0; i < (config.lettersRound.consonants as any)[consonants]; i++) {
         this.consonants.push(consonants);
       }
     }
