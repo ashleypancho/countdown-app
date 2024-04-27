@@ -57,6 +57,7 @@ export class NumbersComponent implements OnInit {
     // add 1 to the numberButtonArray so that we get all the indexes 0-MAX_NUMBERS
     this.numberButtonArray = Array(this.MAX_LARGE_NUMBERS + 1).fill(0).map((x, i) => i);
     this.numberList = [];
+    this.targetNumber = null;
     this.timer = this.TIMER_DURATION;
   }
 
