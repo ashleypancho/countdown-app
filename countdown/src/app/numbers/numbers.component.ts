@@ -19,6 +19,7 @@ export class NumbersComponent implements OnInit {
 
   smallNumbers: number[] = [];
   largeNumbers: number[] = [];
+  targetNumber: number | null = null;
 
   numberButtonArray: number[] = [];
   numberList: number[] = [];
@@ -46,15 +47,36 @@ export class NumbersComponent implements OnInit {
   }
 
   selectLargeNumbersCount(value: number) {
+    this.phase = Phases.ENTRY;
+    const tempNumberList: number[] = [];
+
     for (let i = 0; i < value; i++) {
-      this.numberList.push(this.largeNumbers[0]);
+      tempNumberList.push(this.largeNumbers[0]);
       this.largeNumbers.splice(0, 1);
     }
     for (let i = value; i < this.MAX_NUMBERS; i++) {
-      this.numberList.push(this.smallNumbers[0]);
+      tempNumberList.push(this.smallNumbers[0]);
       this.smallNumbers.splice(0, 1);
     }
-    this.phase = Phases.ENTRY
+
+    let numbersDisplayed = 0;
+
+    const interval = setInterval(() => {
+      if (numbersDisplayed < this.MAX_NUMBERS){
+        this.numberList.push(tempNumberList[0]);
+        tempNumberList.splice(0,1);
+        numbersDisplayed++;
+      } else {
+        clearInterval(interval);
+        this.generateTargetNumber();
+      }
+    }, 1000)
+  }
+
+  generateTargetNumber() {
+    const min = config.numbersRound.min_target_number;
+    const max = config.numbersRound.max_target_number;
+    this.targetNumber = Math.floor(Math.random() * (max - min) + min)
   }
 
   selectNumber(value: number) {

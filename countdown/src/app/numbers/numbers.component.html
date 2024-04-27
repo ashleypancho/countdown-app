@@ -12,6 +12,11 @@
   </div>
 </div>
 <div class="tile-group" *ngIf="phase !== Phases.NUMBER_SELECTION">
+  <span class="tile target-tile">
+    <strong>
+      {{targetNumber}}
+    </strong>
+  </span>
   <span class="tile" *ngFor="let number of numberList" (click)="selectNumber(number)">
     <strong>
       {{number}}

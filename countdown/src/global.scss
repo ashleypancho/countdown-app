@@ -64,4 +64,13 @@
         height: 4rem;
         text-align: center;
     }
+
+    .target-tile {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 16rem !important;
+        height: 6rem !important;
+        font-size: 4rem;
+    }
 }
