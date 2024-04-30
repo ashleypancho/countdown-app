@@ -10,8 +10,8 @@ export class SettingsService {
   constructor() { }
 
   initSettings() {
-    this.playAudio = String(localStorage.getItem('playAudio')).toLowerCase() === 'true';
-    this.audioVolume = Number(localStorage.getItem('audioVolume')) / 100;
+    this.playAudio = String(localStorage.getItem('playAudio')).toLowerCase() === 'true' || this.playAudio;
+    this.audioVolume = Number(localStorage.getItem('audioVolume')) / 100 || this.audioVolume;
   }
 
   toggleAudio() {
