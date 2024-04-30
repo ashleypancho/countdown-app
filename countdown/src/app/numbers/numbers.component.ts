@@ -29,6 +29,11 @@ export class NumbersComponent implements OnInit {
   numberButtonArray: number[] = [];
   numberList: number[] = [];
 
+  equationList: string[] = [];
+
+  errorMessage: string = '';
+  isToastOpen: boolean = false;
+
   timer: number = 0;
 
   finalScore: number = 0;
@@ -57,8 +62,12 @@ export class NumbersComponent implements OnInit {
     // add 1 to the numberButtonArray so that we get all the indexes 0-MAX_NUMBERS
     this.numberButtonArray = Array(this.MAX_LARGE_NUMBERS + 1).fill(0).map((x, i) => i);
     this.numberList = [];
+    this.equationList = [];
     this.targetNumber = null;
     this.timer = this.TIMER_DURATION;
+    this.finalEquation = '';
+    this.finalMessage = '';
+    this.finalScore = 0;
   }
 
   selectLargeNumbersCount(value: number) {
@@ -107,7 +116,7 @@ export class NumbersComponent implements OnInit {
     const interval = setInterval(() => {
       if (this.timer <= 0) {
         clearInterval(interval);
-        this.phase = Phases.SCORE;
+        this.phase = Phases.FINAL_SUBMISSION;
       }
       this.timer -= 1;
     }, 1000);
@@ -116,6 +125,77 @@ export class NumbersComponent implements OnInit {
   selectNumber(value: number) {
     console.log(value)
   };
+
+  submitEquation() {
+    const input = (document.getElementById('equation') as HTMLInputElement);
+    const wordFoundInletterList = this.isValidEquationWithGivenNumbers(input.value);
+    if (!this.isEquation(input.value)) {
+      this.errorMessage = 'Invalid word: Equation may not contain letters';
+      this.setOpen(true);
+    //  } else if (this.wordlist.includes(input.value)) {
+    //   this.errorMessage = "Word already submitted";
+    //   this.setOpen(true);
+    // } else if (!wordFoundInletterList) {
+    //   this.errorMessage = "Invalid word: Word not valid based on given letters";
+    //   this.setOpen(true);
+    } else if (input.value.length > 0) { //  && !this.wordlist.includes(input.value)) {
+      this.equationList.push(input.value);
+    }
+    (document.getElementById('equation') as HTMLInputElement).value = '';
+  }
+
+  setOpen(isOpen: boolean) {
+    this.isToastOpen = isOpen;
+  }
+
+  isEquation(str: string) {
+    return /(\d+[+\-*\/^%])*(\d+)/.test(str);
+  }
+
+  isValidEquationWithGivenNumbers(equation: string) {
+    return true;
+    // const validLetters = this.letterList.slice();
+    // for (let i = 0; i < word.length; i++) {
+    //   if (validLetters.includes(word.charAt(i))) {
+    //     // check if validLetters array contains the letter of the word
+    //     // if it is present in the validLetters array, remove it
+    //     validLetters.splice(validLetters.indexOf(word.charAt(i)), 1);
+    //   } else {
+    //     // the given word cannot be made from the list of letters, return false
+    //     return false;
+    //   }
+    // }
+
+    // for loop exited, which means word must be valid
+    return true;
+  }
+
+  selectEquation(equation: string) {
+    this.finalEquation = equation;
+    const finalEval = eval(this.finalEquation);
+    if (this.targetNumber === null) {
+      // this should never happen
+      this.targetNumber = 0;
+    }
+    const distanceFromTarget = Math.abs(this.targetNumber - finalEval)
+
+    if (distanceFromTarget === 0) {
+      this.finalScore = 10;
+    } else if (distanceFromTarget >= 1 && distanceFromTarget <= 5) {
+      this.finalScore = 7;
+    } else if (distanceFromTarget >= 6 && distanceFromTarget <= 10) {
+      this.finalScore = 5;
+    } else {
+      this.finalScore = 0;
+    }
+
+    if(this.finalScore > 0) {
+      this.finalMessage = 'Congratulations! You made ' + finalEval + ' which gives you a score of ' + this.finalScore + ' points!';
+    } else {
+      this.finalMessage = 'Sorry! You made ' + finalEval + ' which gives you a score of ' + this.finalScore + ' points.';
+    }
+    this.phase = Phases.SCORE;
+  }
 
   replay(replaceNumbers: boolean) {
     if (replaceNumbers) {
