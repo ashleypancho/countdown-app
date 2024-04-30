@@ -10,7 +10,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint",
-    "gh-pages": "ionic build --prod -- --base-href https://countdown.micronerd01.com/ && npx angular-cli-ghpages --branch=gh-pages --dir=www--cname=countdown.micronerd01.com"
+    "gh-pages": "ionic build --prod -- --base-href https://countdown.micronerd01.com/ && npx angular-cli-ghpages --branch=gh-pages --dir=www --cname=countdown.micronerd01.com"
   },
 
   "private": true,
