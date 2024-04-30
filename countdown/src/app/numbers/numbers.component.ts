@@ -5,7 +5,8 @@ import { SettingsService } from '../shared/settings.service';
 export enum Phases {
   NUMBER_SELECTION,
   NUMBER_DISPLAY,
-  ENTRY,
+  RESULT_ENTRY,
+  EQUATION_ENTRY,
   FINAL_SUBMISSION,
   SCORE
 }
@@ -19,6 +20,7 @@ export class NumbersComponent implements OnInit {
   MAX_NUMBERS: number = 0;
   MAX_LARGE_NUMBERS: number = 0;
   TIMER_DURATION: number = 0;
+  INPUT_TIMER_DURATION: number = 0;
   Phases = Phases;
   phase: number = Phases.NUMBER_SELECTION;
 
@@ -31,10 +33,13 @@ export class NumbersComponent implements OnInit {
 
   equationList: string[] = [];
 
+  submittedResult: number = 0;
   errorMessage: string = '';
   isToastOpen: boolean = false;
 
   timer: number = 0;
+  inputTimer: number = 0;
+
 
   finalScore: number = 0;
   finalMessage: string = '';
@@ -46,6 +51,7 @@ export class NumbersComponent implements OnInit {
     this.MAX_NUMBERS = config.numbersRound.max_numbers;
     this.MAX_LARGE_NUMBERS = config.numbersRound.max_large_numbers;
     this.TIMER_DURATION = config.numbersRound.timer_duration_in_seconds;
+    this.INPUT_TIMER_DURATION = config.numbersRound.input_timer_in_seconds;
 
     this.resetGame();
 
@@ -65,6 +71,8 @@ export class NumbersComponent implements OnInit {
     this.equationList = [];
     this.targetNumber = null;
     this.timer = this.TIMER_DURATION;
+    this.inputTimer = this.INPUT_TIMER_DURATION;
+    this.submittedResult = 0;
     this.finalEquation = '';
     this.finalMessage = '';
     this.finalScore = 0;
@@ -101,7 +109,7 @@ export class NumbersComponent implements OnInit {
     const min = config.numbersRound.min_target_number;
     const max = config.numbersRound.max_target_number;
     this.targetNumber = Math.floor(Math.random() * (max - min) + min);
-    this.phase = Phases.ENTRY;
+    this.phase = Phases.RESULT_ENTRY;
     this.startTimer();
   }
 
@@ -116,15 +124,38 @@ export class NumbersComponent implements OnInit {
     const interval = setInterval(() => {
       if (this.timer <= 0) {
         clearInterval(interval);
-        this.phase = Phases.FINAL_SUBMISSION;
+        if (this.submittedResult !== 0) {
+          this.phase = Phases.EQUATION_ENTRY;
+          this.startInputTimer();
+        } else {
+          this.finalMessage = 'Sorry! You didn\'t submit a result in time. You scored 0 points.';
+          this.phase = Phases.SCORE;
+        }
       }
       this.timer -= 1;
     }, 1000);
   }
 
-  selectNumber(value: number) {
-    console.log(value)
-  };
+  startInputTimer() {
+    this.inputTimer = this.INPUT_TIMER_DURATION;
+    const interval = setInterval(() => {
+      if (this.inputTimer <= 0) {
+        clearInterval(interval);
+        this.selectEquation(this.finalEquation);
+      }
+      this.inputTimer -= 1;
+    }, 1000);
+  }
+
+  selectNumber(value: any) {
+    let input = (document.getElementById('equation') as HTMLInputElement);
+    input.value = input.value + value as string;
+  }
+
+  clearEquation() {
+    const input = (document.getElementById('equation') as HTMLInputElement);
+    input.value = '';
+  }
 
   submitEquation() {
     const input = (document.getElementById('equation') as HTMLInputElement);
@@ -132,14 +163,15 @@ export class NumbersComponent implements OnInit {
     if (!this.isEquation(input.value)) {
       this.errorMessage = 'Invalid word: Equation may not contain letters';
       this.setOpen(true);
-    //  } else if (this.wordlist.includes(input.value)) {
-    //   this.errorMessage = "Word already submitted";
-    //   this.setOpen(true);
-    // } else if (!wordFoundInletterList) {
-    //   this.errorMessage = "Invalid word: Word not valid based on given letters";
-    //   this.setOpen(true);
+      //  } else if (this.wordlist.includes(input.value)) {
+      //   this.errorMessage = "Word already submitted";
+      //   this.setOpen(true);
+      // } else if (!wordFoundInletterList) {
+      //   this.errorMessage = "Invalid word: Word not valid based on given letters";
+      //   this.setOpen(true);
     } else if (input.value.length > 0) { //  && !this.wordlist.includes(input.value)) {
       this.equationList.push(input.value);
+      this.selectEquation(input.value);
     }
     (document.getElementById('equation') as HTMLInputElement).value = '';
   }
@@ -153,7 +185,6 @@ export class NumbersComponent implements OnInit {
   }
 
   isValidEquationWithGivenNumbers(equation: string) {
-    return true;
     // const validLetters = this.letterList.slice();
     // for (let i = 0; i < word.length; i++) {
     //   if (validLetters.includes(word.charAt(i))) {
@@ -170,6 +201,18 @@ export class NumbersComponent implements OnInit {
     return true;
   }
 
+  submitResult() {
+    const input = (document.getElementById('result') as HTMLInputElement);
+    if (this.submittedResult === 0) {
+      this.submittedResult = Number(input.value);
+      this.errorMessage = "Result submitted! Please wait for the timer to finish.";
+      this.setOpen(true);
+    } else {
+      this.errorMessage = "You've already submitted a result, please wait for the timer to finish.";
+      this.setOpen(true);
+    }
+  }
+
   selectEquation(equation: string) {
     this.finalEquation = equation;
     const finalEval = eval(this.finalEquation);
@@ -177,23 +220,31 @@ export class NumbersComponent implements OnInit {
       // this should never happen
       this.targetNumber = 0;
     }
-    const distanceFromTarget = Math.abs(this.targetNumber - finalEval)
 
-    if (distanceFromTarget === 0) {
-      this.finalScore = 10;
-    } else if (distanceFromTarget >= 1 && distanceFromTarget <= 5) {
-      this.finalScore = 7;
-    } else if (distanceFromTarget >= 6 && distanceFromTarget <= 10) {
-      this.finalScore = 5;
+    if (equation === '') {
+      this.finalMessage = 'Sorry! You didn\'t submit an equation in time. You scored 0 points.';
+    } else if (this.submittedResult !== finalEval) {
+      this.finalMessage = 'You submitted the result ' + this.submittedResult + ', but your equation evaluated to ' + finalEval + '. You scored 0 points.';
     } else {
-      this.finalScore = 0;
+      const distanceFromTarget = Math.abs(this.targetNumber - finalEval)
+
+      if (distanceFromTarget === 0) {
+        this.finalScore = 10;
+      } else if (distanceFromTarget >= 1 && distanceFromTarget <= 5) {
+        this.finalScore = 7;
+      } else if (distanceFromTarget >= 6 && distanceFromTarget <= 10) {
+        this.finalScore = 5;
+      } else {
+        this.finalScore = 0;
+      }
+
+      if (this.finalScore > 0) {
+        this.finalMessage = 'Congratulations! You made ' + finalEval + ' which gives you a score of ' + this.finalScore + ' points!';
+      } else {
+        this.finalMessage = 'Sorry! You made ' + finalEval + ' which gives you a score of ' + this.finalScore + ' points.';
+      }
     }
 
-    if(this.finalScore > 0) {
-      this.finalMessage = 'Congratulations! You made ' + finalEval + ' which gives you a score of ' + this.finalScore + ' points!';
-    } else {
-      this.finalMessage = 'Sorry! You made ' + finalEval + ' which gives you a score of ' + this.finalScore + ' points.';
-    }
     this.phase = Phases.SCORE;
   }
 

@@ -25,34 +25,43 @@
     </strong>
   </span>
 </div>
-<!-- <div class="tile-group" *ngIf="phase !== Phases.NUMBER_SELECTION">
-  <span class="tile">
+<div class="tile-group" *ngIf="phase === Phases.EQUATION_ENTRY">
+  <span class="tile" (click)="selectNumber('+')">
     <strong>+</strong>
   </span>
-  <span class="tile">
+  <span class="tile" (click)="selectNumber('-')">
     <strong>-</strong>
   </span>
-  <span class="tile">
-    <strong>x</strong>
+  <span class="tile" (click)="selectNumber('*')">
+    <strong>*</strong>
   </span>
-  <span class="tile">
-    <strong>÷</strong>
+  <span class="tile" (click)="selectNumber('/')">
+    <strong>/</strong>
   </span>
-</div> -->
-<div *ngIf="phase === Phases.ENTRY">
+  <span class="tile" (click)="selectNumber('(')">
+    <strong>(</strong>
+  </span>
+  <span class="tile" (click)="selectNumber(')')">
+    <strong>)</strong>
+  </span>
+</div>
+<div *ngIf="phase === Phases.RESULT_ENTRY">
   <!-- entry phase - player enters words based on letters -->
   <p>Time left: {{timer}} second<span *ngIf="timer !== 1">s</span></p>
+
+  <ion-input id="result" autofocus="true" fill="outline" placeholder="Enter your result"
+    (keyup.enter)="submitResult()"></ion-input>
+  <ion-button (click)="submitResult()">Submit</ion-button>
+</div>
+
+<div *ngIf="phase === Phases.EQUATION_ENTRY">
+  <p>Time left: {{inputTimer}} second<span *ngIf="inputTimer !== 1">s</span></p>
   <ion-input id="equation" autofocus="true" fill="outline" placeholder="Enter an equation"
     (keyup.enter)="submitEquation()"></ion-input>
   <ion-button (click)="submitEquation()">Submit</ion-button>
-
-  <div>
-    <p>Submitted equations</p>
-    <ul>
-      <li *ngFor="let eq of equationList">{{eq}}</li>
-    </ul>
-  </div>
+  <ion-button (click)="clearEquation()">Clear</ion-button>
 </div>
+
 <div *ngIf="phase === Phases.FINAL_SUBMISSION">
   <div>
     <p>Select the equation you would like to submit</p>
