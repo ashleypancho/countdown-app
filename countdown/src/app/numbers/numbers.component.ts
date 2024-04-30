@@ -7,7 +7,6 @@ export enum Phases {
   NUMBER_DISPLAY,
   RESULT_ENTRY,
   EQUATION_ENTRY,
-  FINAL_SUBMISSION,
   SCORE
 }
 @Component({

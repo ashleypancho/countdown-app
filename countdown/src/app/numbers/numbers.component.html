@@ -62,12 +62,6 @@
   <ion-button (click)="clearEquation()">Clear</ion-button>
 </div>
 
-<div *ngIf="phase === Phases.FINAL_SUBMISSION">
-  <div>
-    <p>Select the equation you would like to submit</p>
-    <ion-button *ngFor="let eq of equationList" (click)="selectEquation(eq)">{{eq}}</ion-button>
-  </div>
-</div>
 <div *ngIf="phase === Phases.SCORE">
   <p>{{ finalMessage }}</p>
 
