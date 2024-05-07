@@ -9,7 +9,7 @@ export class HomeComponent {
 
   constructor() {}
 
-  currentView = 'letters';
+  currentView = 'numbers';
 
   changeView(newView: string) {
     this.currentView = newView;

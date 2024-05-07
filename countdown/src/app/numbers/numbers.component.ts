@@ -28,9 +28,9 @@ export class NumbersComponent implements OnInit {
   targetNumber: number | null = null;
 
   numberButtonArray: number[] = [];
-  numberList: number[] = [];
+  numberList: string[] = [];
 
-  equationList: string[] = [];
+  equationList: string = ''; //string[] = [];
 
   submittedResult: number = 0;
   errorMessage: string = '';
@@ -67,7 +67,7 @@ export class NumbersComponent implements OnInit {
     // add 1 to the numberButtonArray so that we get all the indexes 0-MAX_NUMBERS
     this.numberButtonArray = Array(this.MAX_LARGE_NUMBERS + 1).fill(0).map((x, i) => i);
     this.numberList = [];
-    this.equationList = [];
+    this.equationList = ''; //[];
     this.targetNumber = null;
     this.timer = this.TIMER_DURATION;
     this.inputTimer = this.INPUT_TIMER_DURATION;
@@ -94,7 +94,7 @@ export class NumbersComponent implements OnInit {
 
     const interval = setInterval(() => {
       if (numbersDisplayed < this.MAX_NUMBERS) {
-        this.numberList.push(tempNumberList[0]);
+        this.numberList.push(String(tempNumberList[0]));
         tempNumberList.splice(0, 1);
         numbersDisplayed++;
       } else {
@@ -158,18 +158,17 @@ export class NumbersComponent implements OnInit {
 
   submitEquation() {
     const input = (document.getElementById('equation') as HTMLInputElement);
-    const wordFoundInletterList = this.isValidEquationWithGivenNumbers(input.value);
-    if (!this.isEquation(input.value)) {
-      this.errorMessage = 'Invalid word: Equation may not contain letters';
+    if (input.value.length === 0) {
+      this.errorMessage = 'Invalid equation: You have not submitted an equation';
       this.setOpen(true);
-      //  } else if (this.wordlist.includes(input.value)) {
-      //   this.errorMessage = "Word already submitted";
-      //   this.setOpen(true);
-      // } else if (!wordFoundInletterList) {
-      //   this.errorMessage = "Invalid word: Word not valid based on given letters";
-      //   this.setOpen(true);
+    } else if (!this.isEquation(input.value)) {
+      this.errorMessage = 'Invalid equation: Equation may not contain letters';
+      this.setOpen(true);
+    } else if (!this.isValidEquationWithGivenNumbers(input.value)) {
+      this.errorMessage = "Invalid equation: Equation not possible with given numbers";
+      this.setOpen(true);
     } else if (input.value.length > 0) { //  && !this.wordlist.includes(input.value)) {
-      this.equationList.push(input.value);
+      this.equationList = input.value;
       this.selectEquation(input.value);
     }
     (document.getElementById('equation') as HTMLInputElement).value = '';
@@ -184,17 +183,20 @@ export class NumbersComponent implements OnInit {
   }
 
   isValidEquationWithGivenNumbers(equation: string) {
-    // const validLetters = this.letterList.slice();
-    // for (let i = 0; i < word.length; i++) {
-    //   if (validLetters.includes(word.charAt(i))) {
-    //     // check if validLetters array contains the letter of the word
-    //     // if it is present in the validLetters array, remove it
-    //     validLetters.splice(validLetters.indexOf(word.charAt(i)), 1);
-    //   } else {
-    //     // the given word cannot be made from the list of letters, return false
-    //     return false;
-    //   }
-    // }
+    const validNumbers = this.numberList.slice();
+    const equationArray = equation.match(/\d+/g);
+    if (equationArray !== null) {
+      for (let i = 0; i < equationArray.length; i++) {
+        if (validNumbers.includes(equationArray[i])) {
+          // check if validNumbers array contains the number in the equation
+          // if it is present in the validNumbers array, remove it
+          validNumbers.splice(validNumbers.indexOf(equationArray[i]), 1);
+        } else {
+          // the given word cannot be made from the list of letters, return false
+          return false;
+        }
+      }
+    }
 
     // for loop exited, which means word must be valid
     return true;
