@@ -68,5 +68,8 @@
             75,
             100
         ]
+    },
+    "conundrum": {
+        "timer_duration_in_seconds": 30
     }
 }

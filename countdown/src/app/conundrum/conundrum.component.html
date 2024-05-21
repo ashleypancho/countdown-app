@@ -1,3 +1,38 @@
-<p>
-  conundrum works!
-</p>
+<div>
+  <strong>Conundrum</strong>
+</div>
+<div *ngIf="phase === Phases.START_SCREEN">
+  <!-- letterSelection phase - player chooses -->
+  <div class="selection-buttons">
+    <ion-button (click)="startGame()">Start</ion-button>
+  </div>
+</div>
+<div class="tile-group">
+  <span class="tile" *ngFor="let letter of letterList" (click)="selectLetter(letter)">
+    <strong>
+      {{letter}}
+    </strong>
+  </span>
+</div>
+<div *ngIf="phase === Phases.LETTER_DISPLAY">
+  <!-- entry phase - player enters words based on letters -->
+  <p>Time left: {{timer}} second<span *ngIf="timer !== 1">s</span></p>
+  <ion-input id="word" autofocus="true" fill="outline" placeholder="Enter a word"
+    (keyup.enter)="submitWord()"></ion-input>
+  <ion-button (click)="submitWord()">Submit</ion-button>
+</div>
+
+<div *ngIf="phase === Phases.SCORE">
+  <p>{{ finalMessage }}</p>
+  <div class="tile-group">
+    <span class="tile" *ngFor="let letter of solutionLetterList">
+      <strong>
+        {{letter}}
+      </strong>
+    </span>
+  </div>  
+  <ion-button (click)="resetGame()">Play again</ion-button>
+</div>
+
+<ion-toast [isOpen]="isToastOpen" position="bottom" positionAnchor="footer" [message]="errorMessage" [duration]="1000"
+  (didDismiss)="setOpen(false)"></ion-toast>
