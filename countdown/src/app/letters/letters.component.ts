@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import config from '../shared/config.json';
 import { DictionaryService } from '../shared/dictionary.service';
-import { SettingsService } from '../shared/settings.service';
+import { AudioService } from '../shared/audio.service';
 
 @Component({
   selector: 'app-letters',
@@ -32,7 +32,7 @@ export class LettersComponent implements OnInit {
 
   letterList: string[] = [];
 
-  constructor(private dictService: DictionaryService, private settingsService: SettingsService) { }
+  constructor(private dictService: DictionaryService, private audioService: AudioService) { }
 
   ngOnInit() {
     this.MAX_LETTERS = config.lettersRound.max_letters;
@@ -114,12 +114,8 @@ export class LettersComponent implements OnInit {
   }
 
   startTimer() {
-    if (this.settingsService.playAudio) {
-      // start playing the timer audio
-      const audio = new Audio('assets/audio/countdown_timer.mp3');
-      audio.volume = this.settingsService.audioVolume;
-      audio.play();
-    }
+    this.audioService.setAudio('countdown_timer');
+    this.audioService.playAudio();
     this.timer = this.TIMER_DURATION;
     const interval = setInterval(() => {
       if (this.timer <= 0) {

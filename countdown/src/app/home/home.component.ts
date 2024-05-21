@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { AudioService } from '../shared/audio.service';
 
 @Component({
   selector: 'app-home',
@@ -7,12 +8,13 @@ import { Component } from '@angular/core';
 })
 export class HomeComponent {
 
-  constructor() {}
+  constructor(private audioService: AudioService) {}
 
   currentView = 'letters';
 
   changeView(newView: string) {
     this.currentView = newView;
+    this.audioService.stopAudio();
   }
 
 }
