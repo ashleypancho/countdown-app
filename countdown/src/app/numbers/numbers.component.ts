@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import config from '../shared/config.json'
-import { SettingsService } from '../shared/settings.service';
+import { AudioService } from '../shared/audio.service';
 
 export enum Phases {
   NUMBER_SELECTION,
@@ -30,7 +30,7 @@ export class NumbersComponent implements OnInit {
   numberButtonArray: number[] = [];
   numberList: string[] = [];
 
-  equationList: string = ''; //string[] = [];
+  equationList: string = ''; 
 
   submittedResult: number = 0;
   errorMessage: string = '';
@@ -44,7 +44,7 @@ export class NumbersComponent implements OnInit {
   finalMessage: string = '';
   finalEquation: string = '';
 
-  constructor(private settingsService: SettingsService) { }
+  constructor(private audioService: AudioService) { }
 
   ngOnInit() {
     this.MAX_NUMBERS = config.numbersRound.max_numbers;
@@ -67,7 +67,7 @@ export class NumbersComponent implements OnInit {
     // add 1 to the numberButtonArray so that we get all the indexes 0-MAX_NUMBERS
     this.numberButtonArray = Array(this.MAX_LARGE_NUMBERS + 1).fill(0).map((x, i) => i);
     this.numberList = [];
-    this.equationList = ''; //[];
+    this.equationList = ''; 
     this.targetNumber = null;
     this.timer = this.TIMER_DURATION;
     this.inputTimer = this.INPUT_TIMER_DURATION;
@@ -113,12 +113,8 @@ export class NumbersComponent implements OnInit {
   }
 
   startTimer() {
-    if (this.settingsService.playAudio) {
-      // start playing the timer audio
-      const audio = new Audio('assets/audio/countdown_timer.mp3');
-      audio.volume = this.settingsService.audioVolume;
-      audio.play();
-    }
+    this.audioService.setAudio('countdown_timer');
+    this.audioService.playAudio();
     this.timer = this.TIMER_DURATION;
     const interval = setInterval(() => {
       if (this.timer <= 0) {
@@ -167,8 +163,9 @@ export class NumbersComponent implements OnInit {
     } else if (!this.isValidEquationWithGivenNumbers(input.value)) {
       this.errorMessage = "Invalid equation: Equation not possible with given numbers";
       this.setOpen(true);
-    } else if (input.value.length > 0) { //  && !this.wordlist.includes(input.value)) {
+    } else if (input.value.length > 0) { 
       this.equationList = input.value;
+      this.audioService.stopAudio();
       this.selectEquation(input.value);
     }
     (document.getElementById('equation') as HTMLInputElement).value = '';

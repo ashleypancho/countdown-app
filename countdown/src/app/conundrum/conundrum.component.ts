@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import config from '../shared/config.json';
 import wordList from './conundrum_data.json';
-import { SettingsService } from '../shared/settings.service';
+import { AudioService } from '../shared/audio.service';
 export enum Phases {
   START_SCREEN,
   LETTER_DISPLAY,
@@ -34,7 +34,7 @@ export class ConundrumComponent implements OnInit {
   letterList: string[] = [];
   solutionLetterList: string[] = [];
 
-  constructor(private settingsService: SettingsService) { }
+  constructor(private audioService: AudioService) { }
 
   ngOnInit() {
     this.TIMER_DURATION = config.conundrum.timer_duration_in_seconds;
@@ -68,12 +68,8 @@ export class ConundrumComponent implements OnInit {
   }
 
   startTimer() {
-    if (this.settingsService.playAudio) {
-      // start playing the timer audio
-      const audio = new Audio('assets/audio/countdown_timer.mp3');
-      audio.volume = this.settingsService.audioVolume;
-      audio.play();
-    }
+    this.audioService.setAudio('countdown_timer');
+    this.audioService.playAudio();
     this.timer = this.TIMER_DURATION;
     const interval = setInterval(() => {
       if (this.timer <= 0 || this.finalWord.length > 0) {
@@ -105,6 +101,7 @@ export class ConundrumComponent implements OnInit {
       this.setOpen(true);
     } else if (input.value.length > 0 && !this.wordlist.includes(input.value)) {
       this.finalWord = input.value;
+      this.audioService.stopAudio();
       this.score();
     }
     (document.getElementById('word') as HTMLInputElement).value = '';
