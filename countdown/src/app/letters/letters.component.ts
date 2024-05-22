@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import config from '../shared/config.json';
 import { DictionaryService } from '../shared/dictionary.service';
 import { AudioService } from '../shared/audio.service';
+import { IonModal } from '@ionic/angular';
 
 @Component({
   selector: 'app-letters',
@@ -9,6 +10,8 @@ import { AudioService } from '../shared/audio.service';
   styleUrls: ['./letters.component.scss'],
 })
 export class LettersComponent implements OnInit {
+  @ViewChild(IonModal) modal!: IonModal;
+  
   MAX_LETTERS: number = 9;
   TIMER_DURATION: number = 30;
 
@@ -52,6 +55,10 @@ export class LettersComponent implements OnInit {
     }
     this.vowels.sort((a, b) => 0.5 - Math.random());
     this.consonants.sort((a, b) => 0.5 - Math.random());
+  }
+
+  closeInfo() {
+    this.modal.dismiss();
   }
 
   resetGame() {

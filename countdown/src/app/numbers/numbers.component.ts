@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import config from '../shared/config.json'
 import { AudioService } from '../shared/audio.service';
+import { IonModal } from '@ionic/angular';
 
 export enum Phases {
   NUMBER_SELECTION,
@@ -16,6 +17,8 @@ export enum Phases {
 })
 
 export class NumbersComponent implements OnInit {
+  @ViewChild(IonModal) modal!: IonModal;
+  
   MAX_NUMBERS: number = 0;
   MAX_LARGE_NUMBERS: number = 0;
   TIMER_DURATION: number = 0;
@@ -60,6 +63,10 @@ export class NumbersComponent implements OnInit {
     this.smallNumbers.sort((a, b) => 0.5 - Math.random());
     this.largeNumbers.sort((a, b) => 0.5 - Math.random());
 
+  }
+
+  closeInfo() {
+    this.modal.dismiss();
   }
 
   resetGame() {

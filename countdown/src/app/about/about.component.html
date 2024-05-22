@@ -1,4 +1,4 @@
-<ion-title *ngIf="view === 'about-menu'">How to Play</ion-title>
+<strong *ngIf="view === 'about-menu'">How to Play</strong>
 <ion-list [inset]="true" *ngIf="view === 'about-menu'">
   <ion-item [button]="true" (click)="changeView('about-letters')" detail="true">
     <ion-icon slot="start" name="text-outline" size="large"></ion-icon>
