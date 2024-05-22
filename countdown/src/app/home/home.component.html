@@ -18,6 +18,10 @@
     <p>Select a tab to get started.</p>
   </div>
 
+  <div id="container" *ngIf="currentView === 'about'">
+    <app-about></app-about>
+  </div>
+
   <div id="container" *ngIf="currentView === 'letters'">
     <app-letters></app-letters>
   </div>
@@ -48,7 +52,11 @@
     <ion-icon name="sad"></ion-icon>
     Conundrum
   </ion-tab-button>
-  <ion-tab-button tab="conundrum" (click)="changeView('settings')">
+  <ion-tab-button tab="about" (click)="changeView('about')">
+    <ion-icon name="information-circle-outline"></ion-icon>
+    How to Play
+  </ion-tab-button>
+  <ion-tab-button tab="settings" (click)="changeView('settings')">
     <ion-icon name="settings-sharp"></ion-icon>
     Settings
   </ion-tab-button>

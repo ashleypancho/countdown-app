@@ -1,0 +1,66 @@
+<div>
+  <h3>Objective</h3>
+  <p>
+    The objective of the numbers round is to get as close as you can to a randomly-generated three-digit number using
+    six randomly selected numbers and the most basic four mathematical operators (addition, subtraction, division, and
+    multiplication).
+  </p>
+  <h3>How to Play</h3>
+  <p>
+    To begin, select how many large numbers you would like. The large numbers are 25, 50, 75, and 100. Each large number
+    exists only once in the large number deck, so if you select one large number, it is liable to be any of those four,
+    but if you select four large numbers, you are certain to get one of each. The rest of the six numbers will be
+    randomly drawn from the small number deck, consisting of the numbers one through ten.
+  </p>
+  <p>
+    After the numbers are generated, a timer will count down from 30 seconds, and you will be prompted to enter your
+    result. In this box, enter the number you can achieve with the given numbers and four basic operators that is
+    closest to the target number. You may only submit one entry, so be careful!
+  </p>
+  <blockquote>
+    <i>
+      In this example, Ash says that she would like two large numbers. The game generates the following board:
+    </i>
+  </blockquote>
+  <div class="tile-group">
+    <span class="tile target-tile">
+      <strong>
+        {{exampleTarget}}
+      </strong>
+    </span>
+  </div>
+  <div class="tile-group">
+    <span class="tile" *ngFor="let number of exampleNumbersList">
+      <strong>
+        {{number}}
+      </strong>
+    </span>
+  </div>
+
+  <blockquote>
+    <i> 
+      Ash spots that she can make exactly 532, and enters 532 into the “enter your result” box. She enters her equation as
+      (75*7)+8+2-3, and scores 10 points for hitting the target number exactly!
+    </i>
+  </blockquote>
+  <blockquote>
+    <i>
+      Note that she did not have to use all six numbers, and could repeat operators used—just not numbers themselves.
+    </i>
+  </blockquote>
+  <p>
+    You will receive ten points for hitting the target exactly, seven points for being within 5, five points for
+    being within 10, and zero points for anything farther than 10 away from the target number (or an incorrect
+    equation).
+  </p>
+  <p>
+    Please note that your equation must evaluate to an integer, your solution may only involve each number as many times
+    as it is shown on the screen, and that your solutions do not need to use all six numbers given.
+  </p>
+  <p>
+    Once the timer expires and you have submitted your result, you will be taken to a screen where you can input your
+    equation using numbers, basic operators, and parentheses. Make sure your equation equals exactly the number you
+    entered in the “enter your result” box, or you will score zero points!
+  </p>
+
+</div>
