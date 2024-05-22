@@ -1,9 +1,13 @@
 <ion-list>
-  <ion-item>
+  <ion-item [button]="false" lines="none" detail="false">
+    <ion-label>App Version</ion-label>
+    <ion-note slot="end">{{appVersion}}</ion-note>
+  </ion-item>
+  <ion-item lines="none">
     <ion-toggle [enableOnOffLabels]="true" [checked]="settingsService.playAudio" (ionChange)="toggleAudio()">Play
       Audio</ion-toggle>
   </ion-item>
-  <ion-item *ngIf="settingsService.playAudio">
+  <ion-item lines="none" *ngIf="settingsService.playAudio">
     <ion-range [value]="settingsService.audioVolume * 100" (ionChange)="setVolume($event)">Volume</ion-range>
   </ion-item>
 </ion-list>

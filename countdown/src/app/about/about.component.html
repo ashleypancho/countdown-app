@@ -1,0 +1,24 @@
+<ion-title *ngIf="view === 'about-menu'">How to Play</ion-title>
+<ion-list [inset]="true" *ngIf="view === 'about-menu'">
+  <ion-item [button]="true" (click)="changeView('about-letters')" detail="true">
+    <ion-icon slot="start" name="text-outline" size="large"></ion-icon>
+    <ion-label>Letters Game</ion-label>
+  </ion-item>
+  <ion-item [button]="true" (click)="changeView('about-numbers')" detail="true">
+    <ion-icon slot="start" name="add-outline" size="large"></ion-icon>
+    <ion-label>Numbers Game</ion-label>
+  </ion-item>
+  <ion-item [button]="true" (click)="changeView('about-conundrum')" detail="true">
+    <ion-icon slot="start" name="sad" size="large"></ion-icon>
+    <ion-label>Conundrum</ion-label>
+  </ion-item>
+</ion-list>
+
+<div *ngIf="view !== 'about-menu'" class="back-button" (click)="changeView('about-menu')">
+  <ion-icon color="primary" slot="start" name="chevron-back-outline"></ion-icon>
+  <ion-label color="primary">Back</ion-label>
+</div>
+
+<app-about-letters *ngIf="view === 'about-letters'"></app-about-letters>
+<app-about-numbers *ngIf="view === 'about-numbers'"></app-about-numbers>
+<app-about-conundrum *ngIf="view === 'about-conundrum'"></app-about-conundrum>

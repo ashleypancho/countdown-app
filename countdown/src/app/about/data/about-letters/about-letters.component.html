@@ -1,0 +1,50 @@
+<div>
+  <h3>Objective</h3>
+  <p>The objective of the letters round is to make the longest word you can using only the nine letters randomly
+    revealed to you.
+  </p>
+  <h3>How to Play</h3>
+  <p>
+    To begin, select whether you would like your next letter to be a vowel or a consonant until you have selected a
+    total of nine letters. Each set of nine letters selected must have a minimum of three vowels and four consonants.
+    Once the ninth letter has been revealed, a 30-second timer begins.
+  </p>
+  <p>
+    During this time, you may enter as many valid letter combinations into the “enter a word” box as you wish, bearing
+    in mind that you will only be submitting one word at the end of the timer. A valid letter combination is any
+    combination that uses only the letters on the board only as many times as they appear.
+  </p>
+  <blockquote>
+    <i>
+      Consider the following letters board:
+    </i>
+  </blockquote>
+  <div class="tile-group">
+    <span class="tile" *ngFor="let letter of exampleLettersList">
+      <strong>
+        {{letter}}
+      </strong>
+    </span>
+  </div>
+  <blockquote>
+    <i>
+      In this example, you could make the word “LAMA,” as there are two As on the board, but not “LLAMA,” as there
+      is only one L. Submitting the word "LAMA" would grant you a score of 4 points.
+    </i>
+  </blockquote>
+  <p>
+    Please note that at this stage of the game, you will not receive any verification as to whether or not your chosen
+    combination of letters is in the dictionary.
+  </p>
+  <p>
+    At the end of the 30-second timer, you will be taken to a screen that prompts you to select the word you
+    would like to submit. You may submit only one word, and scoring is based on word length, so select the longest word
+    you have made that you are confident is a word — or take a gamble if you’re feeling lucky! Common word game rules
+    apply: no proper nouns or abbreviations will be accepted.
+  </p>
+  <p>
+    Scoring is as follows: zero points for an invalid word or no submission, one point per letter of the submitted valid
+    word, and a whopping 18 points if you manage to make a word with all nine letters!
+  </p>
+
+</div>

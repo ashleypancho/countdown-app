@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { SettingsService } from '../shared/settings.service';
+import packageJson from '../../../package.json';
 
 @Component({
   selector: 'app-settings',
@@ -7,6 +8,7 @@ import { SettingsService } from '../shared/settings.service';
   styleUrls: ['./settings.component.scss'],
 })
 export class SettingsComponent {
+  appVersion: string = packageJson.version;
   toastMessage: string = '';
   isToastOpen: boolean = false;
 

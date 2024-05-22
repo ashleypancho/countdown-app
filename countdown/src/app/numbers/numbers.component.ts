@@ -110,11 +110,11 @@ export class NumbersComponent implements OnInit {
     this.targetNumber = Math.floor(Math.random() * (max - min) + min);
     this.phase = Phases.RESULT_ENTRY;
     this.startTimer();
+    this.audioService.setAudio('countdown_timer');
+    this.audioService.playAudio();
   }
 
   startTimer() {
-    this.audioService.setAudio('countdown_timer');
-    this.audioService.playAudio();
     this.timer = this.TIMER_DURATION;
     const interval = setInterval(() => {
       if (this.timer <= 0) {
