@@ -1,5 +1,28 @@
-<div>
+<div class="title">
   <strong>Conundrum</strong>
+  <ion-button id="open-modal" fill="clear">
+    <ion-icon slot="icon-only" name="information-circle-outline"></ion-icon>
+  </ion-button>
+  <!-- How to Play modal -->
+  <ion-modal trigger="open-modal">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>How to Play</ion-title>
+          <ion-buttons slot="end">
+            <ion-button id="open-modal" fill="clear" (click)="closeInfo()">
+              <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content>
+        <div class="modal-content">
+          <app-about-conundrum></app-about-conundrum>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
 </div>
 <div *ngIf="phase === Phases.START_SCREEN">
   <!-- letterSelection phase - player chooses -->

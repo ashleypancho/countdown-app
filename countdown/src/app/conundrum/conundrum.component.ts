@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import config from '../shared/config.json';
 import wordList from './conundrum_data.json';
 import { AudioService } from '../shared/audio.service';
+import { IonModal } from '@ionic/angular';
 export enum Phases {
   START_SCREEN,
   LETTER_DISPLAY,
@@ -14,6 +15,8 @@ export enum Phases {
   styleUrls: ['./conundrum.component.scss'],
 })
 export class ConundrumComponent implements OnInit {
+  @ViewChild(IonModal) modal!: IonModal;
+
   MAX_LETTERS: number = 9;
   TIMER_DURATION: number = 30;
 
@@ -39,6 +42,10 @@ export class ConundrumComponent implements OnInit {
   ngOnInit() {
     this.TIMER_DURATION = config.conundrum.timer_duration_in_seconds;
 
+  }
+
+  closeInfo() {
+    this.modal.dismiss();
   }
 
   resetGame() {
