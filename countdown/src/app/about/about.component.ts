@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 
-import packageJson from '../../../package.json';
 
 @Component({
   selector: 'app-about',
@@ -8,7 +7,6 @@ import packageJson from '../../../package.json';
   styleUrls: ['./about.component.scss'],
 })
 export class AboutComponent {
-  appVersion: string = packageJson.version;
   view: string = 'about-menu';
 
   constructor() { }
