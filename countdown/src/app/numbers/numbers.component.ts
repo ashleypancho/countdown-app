@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import config from '../shared/config.json'
 import { AudioService } from '../shared/audio.service';
 import { IonModal } from '@ionic/angular';
+import Utils from '../shared/utils';
 
 export enum Phases {
   NUMBER_SELECTION,
@@ -60,8 +61,8 @@ export class NumbersComponent implements OnInit {
     this.smallNumbers = config.numbersRound.small_numbers.slice();
     this.largeNumbers = config.numbersRound.large_numbers.slice();
 
-    this.smallNumbers.sort((a, b) => 0.5 - Math.random());
-    this.largeNumbers.sort((a, b) => 0.5 - Math.random());
+    this.smallNumbers = Utils.shuffle(this.smallNumbers)
+    this.largeNumbers = Utils.shuffle(this.largeNumbers);
 
   }
 
