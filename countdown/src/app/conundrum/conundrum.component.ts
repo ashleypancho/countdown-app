@@ -3,6 +3,7 @@ import config from '../shared/config.json';
 import wordList from './conundrum_data.json';
 import { AudioService } from '../shared/audio.service';
 import { IonModal } from '@ionic/angular';
+import Utils from '../shared/utils';
 export enum Phases {
   START_SCREEN,
   LETTER_DISPLAY,
@@ -41,7 +42,6 @@ export class ConundrumComponent implements OnInit {
 
   ngOnInit() {
     this.TIMER_DURATION = config.conundrum.timer_duration_in_seconds;
-
   }
 
   closeInfo() {
@@ -68,7 +68,7 @@ export class ConundrumComponent implements OnInit {
     this.word = wordList[randWordIdx];
     this.letterList = this.word['scrambled'].split('');
     // scramble the letters
-    this.letterList.sort((a, b) => 0.5 - Math.random());
+    this.letterList = Utils.shuffle(this.letterList);
 
     this.phase = Phases.LETTER_DISPLAY;
     this.startTimer();
