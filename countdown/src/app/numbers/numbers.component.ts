@@ -19,7 +19,7 @@ export enum Phases {
 
 export class NumbersComponent implements OnInit {
   @ViewChild(IonModal) modal!: IonModal;
-  
+
   MAX_NUMBERS: number = 0;
   MAX_LARGE_NUMBERS: number = 0;
   TIMER_DURATION: number = 0;
@@ -34,7 +34,8 @@ export class NumbersComponent implements OnInit {
   numberButtonArray: number[] = [];
   numberList: string[] = [];
 
-  equationList: string = ''; 
+  equationList: string = '';
+  showGenerateTargetButton: boolean = false;
 
   submittedResult: number = 0;
   errorMessage: string = '';
@@ -75,7 +76,8 @@ export class NumbersComponent implements OnInit {
     // add 1 to the numberButtonArray so that we get all the indexes 0-MAX_NUMBERS
     this.numberButtonArray = Array(this.MAX_LARGE_NUMBERS + 1).fill(0).map((x, i) => i);
     this.numberList = [];
-    this.equationList = ''; 
+    this.equationList = '';
+    this.showGenerateTargetButton = false;
     this.targetNumber = null;
     this.timer = this.TIMER_DURATION;
     this.inputTimer = this.INPUT_TIMER_DURATION;
@@ -107,7 +109,7 @@ export class NumbersComponent implements OnInit {
         numbersDisplayed++;
       } else {
         clearInterval(interval);
-        this.generateTargetNumber();
+        this.showGenerateTargetButton = true;
       }
     }, 1000)
   }
@@ -117,12 +119,13 @@ export class NumbersComponent implements OnInit {
     const max = config.numbersRound.max_target_number;
     this.targetNumber = Math.floor(Math.random() * (max - min) + min);
     this.phase = Phases.RESULT_ENTRY;
+    this.showGenerateTargetButton = false;
     this.startTimer();
-    this.audioService.setAudio('countdown_timer');
-    this.audioService.playAudio();
   }
 
   startTimer() {
+    this.audioService.setAudio('countdown_timer');
+    this.audioService.playAudio();
     this.timer = this.TIMER_DURATION;
     const interval = setInterval(() => {
       if (this.timer <= 0) {
@@ -171,7 +174,7 @@ export class NumbersComponent implements OnInit {
     } else if (!this.isValidEquationWithGivenNumbers(input.value)) {
       this.errorMessage = "Invalid equation: Equation not possible with given numbers";
       this.setOpen(true);
-    } else if (input.value.length > 0) { 
+    } else if (input.value.length > 0) {
       this.equationList = input.value;
       this.audioService.stopAudio();
       this.selectEquation(input.value);
@@ -209,14 +212,9 @@ export class NumbersComponent implements OnInit {
 
   submitResult() {
     const input = (document.getElementById('result') as HTMLInputElement);
-    if (this.submittedResult === 0) {
-      this.submittedResult = Number(input.value);
-      this.errorMessage = "Result submitted! Please wait for the timer to finish.";
-      this.setOpen(true);
-    } else {
-      this.errorMessage = "You've already submitted a result, please wait for the timer to finish.";
-      this.setOpen(true);
-    }
+    this.submittedResult = Number(input.value);
+    this.errorMessage = "Result submitted! Please wait for the timer to finish.";
+    this.setOpen(true);
   }
 
   selectEquation(equation: string) {
