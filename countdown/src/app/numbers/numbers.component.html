@@ -35,7 +35,12 @@
   </div>
 </div>
 <div class="tile-group" *ngIf="phase !== Phases.NUMBER_SELECTION">
-  <span class="tile target-tile">
+  <span class="tile target-tile generate-target" *ngIf="showGenerateTargetButton" (click)="generateTargetNumber()">
+    <strong>
+      Generate Target
+    </strong>
+  </span>
+  <span class="tile target-tile" *ngIf="!showGenerateTargetButton">
     <strong>
       {{targetNumber}}
     </strong>
