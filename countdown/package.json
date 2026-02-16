@@ -5,7 +5,11 @@
   "homepage": "https://ionicframework.com/",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "concurrently -k -n UI,API_LOCAL -c cyan,magenta \"npm:serve:ui\" \"npm:serve:api:local\"",
+    "start:prod": "concurrently -k -n UI,API_VERCEL -c cyan,magenta \"npm:serve:ui\" \"npm:serve:api:vercel\"",
+    "serve:ui": "ng serve --proxy-config proxy.conf.json",
+    "serve:api:local": "node scripts/local-api-server.mjs",
+    "serve:api:vercel": "vercel dev .. --listen 3001",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
@@ -61,7 +65,9 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "typescript": "~5.2.2"
+    "concurrently": "^9.1.2",
+    "typescript": "~5.2.2",
+    "vercel": "^39.2.5"
   },
   "description": "An Ionic project"
 }
