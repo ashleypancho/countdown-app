@@ -1,8 +1,11 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>
-      Countdown
-    </ion-title>
+    <ion-title>Countdown</ion-title>
+    <ion-buttons slot="end">
+      <ion-chip color="primary">
+        <ion-label>Score: {{ totalScore$ | async }}</ion-label>
+      </ion-chip>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 

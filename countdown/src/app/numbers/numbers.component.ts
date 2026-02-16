@@ -1,8 +1,9 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import config from '../shared/config.json'
 import { AudioService } from '../shared/audio.service';
 import { IonModal } from '@ionic/angular';
 import Utils from '../shared/utils';
+import { ScoreService } from '../shared/score.service';
 
 export enum Phases {
   NUMBER_SELECTION,
@@ -17,7 +18,7 @@ export enum Phases {
   styleUrls: ['./numbers.component.scss'],
 })
 
-export class NumbersComponent implements OnInit {
+export class NumbersComponent implements OnInit, OnDestroy {
   @ViewChild(IonModal) modal!: IonModal;
 
   MAX_NUMBERS: number = 0;
@@ -48,8 +49,11 @@ export class NumbersComponent implements OnInit {
   finalScore: number = 0;
   finalMessage: string = '';
   finalEquation: string = '';
+  hasScoredRound: boolean = false;
+  private timerInterval: ReturnType<typeof setInterval> | null = null;
+  private inputTimerInterval: ReturnType<typeof setInterval> | null = null;
 
-  constructor(private audioService: AudioService) { }
+  constructor(private audioService: AudioService, private scoreService: ScoreService) { }
 
   ngOnInit() {
     this.MAX_NUMBERS = config.numbersRound.max_numbers;
@@ -67,11 +71,16 @@ export class NumbersComponent implements OnInit {
 
   }
 
+  ngOnDestroy() {
+    this.clearTimerIntervals();
+  }
+
   closeInfo() {
     this.modal.dismiss();
   }
 
   resetGame() {
+    this.clearTimerIntervals();
     this.phase = Phases.NUMBER_SELECTION;
     // add 1 to the numberButtonArray so that we get all the indexes 0-MAX_NUMBERS
     this.numberButtonArray = Array(this.MAX_LARGE_NUMBERS + 1).fill(0).map((x, i) => i);
@@ -85,6 +94,7 @@ export class NumbersComponent implements OnInit {
     this.finalEquation = '';
     this.finalMessage = '';
     this.finalScore = 0;
+    this.hasScoredRound = false;
   }
 
   selectLargeNumbersCount(value: number) {
@@ -124,30 +134,33 @@ export class NumbersComponent implements OnInit {
   }
 
   startTimer() {
+    this.clearPrimaryTimerInterval();
     this.audioService.setAudio('countdown_timer');
     this.audioService.playAudio();
     this.timer = this.TIMER_DURATION;
-    const interval = setInterval(() => {
+    this.timerInterval = setInterval(() => {
       if (this.timer <= 0) {
-        clearInterval(interval);
+        this.clearPrimaryTimerInterval();
         if (this.submittedResult !== 0) {
           this.phase = Phases.EQUATION_ENTRY;
           this.startInputTimer();
         } else {
-          this.finalMessage = 'Sorry! You didn\'t submit a result in time. You scored 0 points.';
-          this.phase = Phases.SCORE;
+          this.completeRound(0, 'Sorry! You didn\'t submit a result in time. You scored 0 points.');
         }
+        return;
       }
       this.timer -= 1;
     }, 1000);
   }
 
   startInputTimer() {
+    this.clearInputTimerInterval();
     this.inputTimer = this.INPUT_TIMER_DURATION;
-    const interval = setInterval(() => {
+    this.inputTimerInterval = setInterval(() => {
       if (this.inputTimer <= 0) {
-        clearInterval(interval);
+        this.clearInputTimerInterval();
         this.selectEquation(this.finalEquation);
+        return;
       }
       this.inputTimer -= 1;
     }, 1000);
@@ -226,9 +239,9 @@ export class NumbersComponent implements OnInit {
     }
 
     if (equation === '') {
-      this.finalMessage = 'Sorry! You didn\'t submit an equation in time. You scored 0 points.';
+      this.completeRound(0, 'Sorry! You didn\'t submit an equation in time. You scored 0 points.');
     } else if (this.submittedResult !== finalEval) {
-      this.finalMessage = 'You submitted the result ' + this.submittedResult + ', but your equation evaluated to ' + finalEval + '. You scored 0 points.';
+      this.completeRound(0, 'You submitted the result ' + this.submittedResult + ', but your equation evaluated to ' + finalEval + '. You scored 0 points.');
     } else {
       const distanceFromTarget = Math.abs(this.targetNumber - finalEval)
 
@@ -243,13 +256,11 @@ export class NumbersComponent implements OnInit {
       }
 
       if (this.finalScore > 0) {
-        this.finalMessage = 'Congratulations! You made ' + finalEval + ' which gives you a score of ' + this.finalScore + ' points!';
+        this.completeRound(this.finalScore, 'Congratulations! You made ' + finalEval + ' which gives you a score of ' + this.finalScore + ' points!');
       } else {
-        this.finalMessage = 'Sorry! You made ' + finalEval + ' which gives you a score of ' + this.finalScore + ' points.';
+        this.completeRound(this.finalScore, 'Sorry! You made ' + finalEval + ' which gives you a score of ' + this.finalScore + ' points.');
       }
     }
-
-    this.phase = Phases.SCORE;
   }
 
   replay(replaceNumbers: boolean) {
@@ -258,5 +269,35 @@ export class NumbersComponent implements OnInit {
     } else {
       this.resetGame();
     }
+  }
+
+  private completeRound(score: number, message: string) {
+    this.clearTimerIntervals();
+    this.finalScore = score;
+    this.finalMessage = message;
+    if (!this.hasScoredRound) {
+      this.scoreService.addPoints(score);
+      this.hasScoredRound = true;
+    }
+    this.phase = Phases.SCORE;
+  }
+
+  private clearPrimaryTimerInterval() {
+    if (this.timerInterval !== null) {
+      clearInterval(this.timerInterval);
+      this.timerInterval = null;
+    }
+  }
+
+  private clearInputTimerInterval() {
+    if (this.inputTimerInterval !== null) {
+      clearInterval(this.inputTimerInterval);
+      this.inputTimerInterval = null;
+    }
+  }
+
+  private clearTimerIntervals() {
+    this.clearPrimaryTimerInterval();
+    this.clearInputTimerInterval();
   }
 }

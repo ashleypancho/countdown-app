@@ -1,21 +1,24 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import config from '../shared/config.json';
 import wordList from './conundrum_data.json';
 import { AudioService } from '../shared/audio.service';
 import { IonModal } from '@ionic/angular';
 import Utils from '../shared/utils';
+import { ScoreService } from '../shared/score.service';
+
 export enum Phases {
   START_SCREEN,
   LETTER_DISPLAY,
   RESULT_ENTRY,
   SCORE
 }
+
 @Component({
   selector: 'app-conundrum',
   templateUrl: './conundrum.component.html',
   styleUrls: ['./conundrum.component.scss'],
 })
-export class ConundrumComponent implements OnInit {
+export class ConundrumComponent implements OnInit, OnDestroy {
   @ViewChild(IonModal) modal!: IonModal;
 
   MAX_LETTERS: number = 9;
@@ -34,14 +37,20 @@ export class ConundrumComponent implements OnInit {
   finalWord: string = '';
   finalScore: number = 0;
   finalMessage: string = '';
+  hasScoredRound: boolean = false;
+  private timerInterval: ReturnType<typeof setInterval> | null = null;
 
   letterList: string[] = [];
   solutionLetterList: string[] = [];
 
-  constructor(private audioService: AudioService) { }
+  constructor(private audioService: AudioService, private scoreService: ScoreService) { }
 
   ngOnInit() {
     this.TIMER_DURATION = config.conundrum.timer_duration_in_seconds;
+  }
+
+  ngOnDestroy() {
+    this.clearTimerInterval();
   }
 
   closeInfo() {
@@ -49,6 +58,7 @@ export class ConundrumComponent implements OnInit {
   }
 
   resetGame() {
+    this.clearTimerInterval();
     this.letterList = [];
     this.solutionLetterList = [];
     this.wordlist = [];
@@ -58,6 +68,7 @@ export class ConundrumComponent implements OnInit {
     this.finalWord = '';
     this.finalScore = 0;
     this.finalMessage = '';
+    this.hasScoredRound = false;
     this.phase = Phases.START_SCREEN;
   }
 
@@ -75,15 +86,17 @@ export class ConundrumComponent implements OnInit {
   }
 
   startTimer() {
+    this.clearTimerInterval();
     this.audioService.setAudio('countdown_timer');
     this.audioService.playAudio();
     this.timer = this.TIMER_DURATION;
-    const interval = setInterval(() => {
+    this.timerInterval = setInterval(() => {
       if (this.timer <= 0 || this.finalWord.length > 0) {
         if (this.finalWord.length === 0) {
           this.score();
         }
-        clearInterval(interval);
+        this.clearTimerInterval();
+        return;
       }
       this.timer -= 1;
     }, 1000);
@@ -101,10 +114,10 @@ export class ConundrumComponent implements OnInit {
       this.errorMessage = 'Invalid word: Word may not contain numbers';
       this.setOpen(true);
     } else if (this.wordlist.includes(input.value)) {
-      this.errorMessage = "Word already submitted";
+      this.errorMessage = 'Word already submitted';
       this.setOpen(true);
     } else if (!wordFoundInletterList) {
-      this.errorMessage = "Invalid word: Word not valid based on given letters";
+      this.errorMessage = 'Invalid word: Word not valid based on given letters';
       this.setOpen(true);
     } else if (input.value.length > 0 && !this.wordlist.includes(input.value)) {
       this.finalWord = input.value;
@@ -112,7 +125,6 @@ export class ConundrumComponent implements OnInit {
       this.score();
     }
     (document.getElementById('word') as HTMLInputElement).value = '';
-
   }
 
   isValidWord(word: string) {
@@ -142,13 +154,28 @@ export class ConundrumComponent implements OnInit {
 
   score() {
     if (this.finalWord.toUpperCase() === this.word['solution']) {
-      this.finalScore = 10;
-      this.finalMessage = 'Congratulations! ' + this.finalWord.toUpperCase() + ' is correct. You scored ' + this.finalScore + ' points!';
+      this.completeRound(10, 'Congratulations! ' + this.finalWord.toUpperCase() + ' is correct. You scored 10 points!');
     } else {
-      this.finalScore = 0;
-      this.finalMessage = `Tough luck! Let's see if anyone in the audience knows… \n`;
+      this.completeRound(0, 'Tough luck! Let\'s see if anyone in the audience knows...');
     }
     this.solutionLetterList = this.word['solution'].split('');
+  }
+
+  private completeRound(score: number, message: string) {
+    this.clearTimerInterval();
+    this.finalScore = score;
+    this.finalMessage = message;
+    if (!this.hasScoredRound) {
+      this.scoreService.addPoints(score);
+      this.hasScoredRound = true;
+    }
     this.phase = Phases.SCORE;
+  }
+
+  private clearTimerInterval() {
+    if (this.timerInterval !== null) {
+      clearInterval(this.timerInterval);
+      this.timerInterval = null;
+    }
   }
 }
