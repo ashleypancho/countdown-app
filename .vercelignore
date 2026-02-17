@@ -1,0 +1,7 @@
+.vercel
+.env*.local
+/countdown/node_modules
+/countdown/.angular
+/countdown/.nx
+/countdown/.vscode
+/countdown/www

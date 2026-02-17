@@ -1,18 +1,23 @@
 {
   "name": "countdown",
-  "version": "1.0.1",
+  "version": "1.0.2-beta.3",
   "author": "Ionic Framework",
   "homepage": "https://ionicframework.com/",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "concurrently -k -n UI,API_LOCAL -c cyan,magenta \"npm:serve:ui\" \"npm:serve:api:local\"",
+    "start:prod": "concurrently -k -n UI,API_VERCEL -c cyan,magenta \"npm:serve:ui\" \"npm:serve:api:vercel\"",
+    "serve:ui": "ng serve --proxy-config proxy.conf.json",
+    "serve:api:local": "node scripts/local-api-server.mjs",
+    "serve:api:vercel": "vercel dev .. --listen 3001",
+    "deploy:dev": "npm version prerelease --preid=beta --no-git-tag-version && vercel deploy ..",
+    "deploy:prod": "npm version minor --no-git-tag-version && vercel deploy --prod ..",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint",
     "gh-pages": "ionic build --prod -- --base-href https://countdown.micronerd01.com/ && npx angular-cli-ghpages --branch=gh-pages --dir=www --cname=countdown.micronerd01.com"
   },
-
   "private": true,
   "dependencies": {
     "@angular/animations": "^17.0.2",
@@ -29,6 +34,7 @@
     "@capacitor/keyboard": "6.0.0",
     "@capacitor/status-bar": "6.0.0",
     "@ionic/angular": "^8.0.0",
+    "@vercel/analytics": "^1.6.1",
     "angular-cli-ghpages": "^2.0.0-beta.2",
     "ionicons": "^7.0.0",
     "rxjs": "~7.8.0",
@@ -50,6 +56,7 @@
     "@types/jasmine": "~5.1.0",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
+    "concurrently": "^9.1.2",
     "eslint": "^8.57.0",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-jsdoc": "^48.2.1",
@@ -61,7 +68,8 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "typescript": "~5.2.2"
+    "typescript": "~5.2.2",
+    "vercel": "^39.2.5"
   },
   "description": "An Ionic project"
 }

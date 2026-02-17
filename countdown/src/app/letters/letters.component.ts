@@ -1,16 +1,17 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import config from '../shared/config.json';
 import { DictionaryService } from '../shared/dictionary.service';
 import { AudioService } from '../shared/audio.service';
 import { IonModal } from '@ionic/angular';
 import Utils from '../shared/utils';
+import { ScoreService } from '../shared/score.service';
 
 @Component({
   selector: 'app-letters',
   templateUrl: './letters.component.html',
   styleUrls: ['./letters.component.scss'],
 })
-export class LettersComponent implements OnInit {
+export class LettersComponent implements OnInit, OnDestroy {
   @ViewChild(IonModal) modal!: IonModal;
   
   MAX_LETTERS: number = 9;
@@ -33,10 +34,16 @@ export class LettersComponent implements OnInit {
   finalWord: string = '';
   finalScore: number = 0;
   finalMessage: string = '';
+  hasScoredRound: boolean = false;
 
   letterList: string[] = [];
+  private timerInterval: ReturnType<typeof setInterval> | null = null;
 
-  constructor(private dictService: DictionaryService, private audioService: AudioService) { }
+  constructor(
+    private dictService: DictionaryService,
+    private audioService: AudioService,
+    private scoreService: ScoreService
+  ) { }
 
   ngOnInit() {
     this.MAX_LETTERS = config.lettersRound.max_letters;
@@ -58,11 +65,16 @@ export class LettersComponent implements OnInit {
     this.consonants = Utils.shuffle(this.consonants);
   }
 
+  ngOnDestroy() {
+    this.clearTimerInterval();
+  }
+
   closeInfo() {
     this.modal.dismiss();
   }
 
   resetGame() {
+    this.clearTimerInterval();
     this.phase = 'letterSelection';
     this.letterList = [];
     this.wordlist = [];
@@ -75,6 +87,7 @@ export class LettersComponent implements OnInit {
     this.finalWord = '';
     this.finalScore = 0;
     this.finalMessage = '';
+    this.hasScoredRound = false;
   }
 
   selectLetter(letter: string) {
@@ -122,19 +135,19 @@ export class LettersComponent implements OnInit {
   }
 
   startTimer() {
+    this.clearTimerInterval();
     this.audioService.setAudio('countdown_timer');
     this.audioService.playAudio();
     this.timer = this.TIMER_DURATION;
-    const interval = setInterval(() => {
+    this.timerInterval = setInterval(() => {
       if (this.timer <= 0) {
-        clearInterval(interval);
+        this.clearTimerInterval();
         if (this.wordlist.length > 0) {
           this.phase = "finalSubmission"
         } else {
-          this.finalScore = 0;
-          this.finalMessage = `Sorry, you didn't enter any words. Your score is 0 points.`;
-          this.phase = 'score';
+          this.completeRound(0, `Sorry, you didn't enter any words. Your score is 0 points.`);
         }
+        return;
       }
       this.timer -= 1;
     }, 1000);
@@ -186,17 +199,10 @@ export class LettersComponent implements OnInit {
   selectWord(word: string) {
     this.finalWord = word;
     this.dictService.getDefinition(word).subscribe((result) => {
-      if (word.length === 9) {
-        this.finalScore = 18;
-      } else {
-        this.finalScore = word.length;
-      }
-      this.finalMessage = 'Congratulations! The word ' + word + ' scored you ' + this.finalScore + ' points!';
-      this.phase = 'score';
+      const score = word.length === 9 ? 18 : word.length;
+      this.completeRound(score, 'Congratulations! The word ' + word + ' scored you ' + score + ' points!');
     }, (error) => {
-      this.finalScore = 0;
-      this.finalMessage = 'Sorry, ' + word + ` isn't a valid word. You scored 0 points.`;
-      this.phase = 'score';
+      this.completeRound(0, 'Sorry, ' + word + ` isn't a valid word. You scored 0 points.`);
     })
   }
 
@@ -205,6 +211,23 @@ export class LettersComponent implements OnInit {
       this.ngOnInit();
     } else {
       this.resetGame();
+    }
+  }
+
+  private completeRound(score: number, message: string) {
+    this.finalScore = score;
+    this.finalMessage = message;
+    if (!this.hasScoredRound) {
+      this.scoreService.addPoints(score);
+      this.hasScoredRound = true;
+    }
+    this.phase = 'score';
+  }
+
+  private clearTimerInterval() {
+    if (this.timerInterval !== null) {
+      clearInterval(this.timerInterval);
+      this.timerInterval = null;
     }
   }
 

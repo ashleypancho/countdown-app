@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { AudioService } from '../shared/audio.service';
+import { ScoreService } from '../shared/score.service';
 
 @Component({
   selector: 'app-home',
@@ -8,7 +9,9 @@ import { AudioService } from '../shared/audio.service';
 })
 export class HomeComponent {
 
-  constructor(private audioService: AudioService) {}
+  totalScore$ = this.scoreService.totalScore$;
+
+  constructor(private audioService: AudioService, private scoreService: ScoreService) {}
 
   currentView = 'letters';
 

@@ -5,3 +5,22 @@
 .modal-content {
     padding: 1rem;
 }
+
+.mw-attribution {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+.mw-logo {
+    width: 50px;
+    height: 50px;
+    flex-shrink: 0;
+}
+
+.mw-attribution-text {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--ion-color-medium);
+}

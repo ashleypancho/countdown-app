@@ -10,7 +10,7 @@ export class DictionaryService {
   constructor(private http: HttpClient) { }
 
   getDefinition(word: string): Observable<Object> {
-    const url = 'https://api.dictionaryapi.dev/api/v2/entries/en/'+ word
+    const url = `/api/merriam?word=${encodeURIComponent(word)}`;
     return this.http.get(url);
   }
 }

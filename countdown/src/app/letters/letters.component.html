@@ -64,6 +64,28 @@
   <p>{{ finalMessage }}</p>
 
   <ion-button (click)="replay(true)">Play again</ion-button>
+
+  <div class="mw-attribution">
+    <picture>
+      <source
+        srcset="assets/icon/MWLogo_ForDarkBG_120x120_2x.png"
+        media="(prefers-color-scheme: dark)"
+      />
+      <img
+        class="mw-logo"
+        src="assets/icon/MWLogo_ForLightBG_120x120_2x.png"
+        alt="Merriam-Webster logo"
+        width="50"
+        height="50"
+      />
+    </picture>
+    <p class="mw-attribution-text">
+      Dictionary queries powered by
+      <a href="https://www.merriam-webster.com" target="_blank" rel="noopener noreferrer">
+        Merriam-Webster
+      </a>
+    </p>
+  </div>
 </div>
 
 <ion-toast [isOpen]="isToastOpen" position="bottom" positionAnchor="footer" [message]="errorMessage" [duration]="1000"
